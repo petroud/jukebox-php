@@ -1,0 +1,182 @@
+.banner{
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.navbar{
+    width: 85%;
+    display:flex;
+    align-items: center;
+    margin: 35px auto;
+}
+
+.logo{
+    flex-basis: 15%;
+}
+
+.logo img{
+    width: 350px;
+    cursor: pointer;
+}
+
+.menu-icons{
+    flex:1;
+    align-items: center;
+    text-align: right;
+}
+
+.menu-icons img{
+  width:20px;
+  margin-left:40px;
+  cursor:pointer;
+}
+
+.menu-icons img:hover{
+  filter:  invert(25%);
+}
+
+
+.content{
+  width:80%;
+  margin:40px auto 0;
+  text-align: center;
+  color:white;
+}
+
+.content form{
+  border-radius: 30px;
+  width: 400px;
+  box-shadow: 0 0 20px 0 rgba(0,0,0,1);
+  color:#fff;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 20px;
+  margin: 0% auto;
+}
+
+.content form h1{
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color:#87BBA2
+}
+
+.input-box{
+  border-radius: 50px;
+  font-size: 18px;
+  padding:15px;
+  margin:10px 0;
+  background-color:solid #fff;
+  opacity:1;
+  width: 80%;
+  border: 0px transparent;
+  outline: none;
+}
+
+.styleselect{
+    color:rgba(255,255,255,0.19);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 80%;
+    background-image: url('/assets/dropdown.png');
+    background-repeat: no-repeat;
+    background-position: 290px center;
+    cursor: pointer;
+    color: #000;
+}
+
+.input-box:focus{
+    box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.5), 0 0 10px 0 rgba(255,255,255,0.19);
+ }
+  
+
+.content form h4{
+  color:black;
+}
+
+.sign-up-ref{
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color:#bdbdbd;
+}
+
+.sign-up-ref:hover{
+    color:#87bba2;
+}
+.content h3{
+  width:80%;
+  margin:100px auto 50px;
+  font-weight:600;
+  font-size: 30px;
+  font-family: Work Sans;
+  line-height: 50px;  
+}
+
+.favi{
+  float:left;
+  width:50px;
+  margin-top: -1px;
+}
+
+.favitext{
+  float:left;
+  width:150px;
+  margin-top: 14px;
+  font-family: Work Sans;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+
+.button{
+  width:150px;
+  padding: 15px 0;
+  text-align: center;
+  margin: 0 10px;
+  border-radius: 50px;
+  font-weight:600;
+  font-family: sans-serif;
+  font-size: 20px;
+  color: white;
+  background: #87BBA2; 
+  border:0px transparent;
+  cursor:pointer;  
+  -webkit-transition-duration:0.4s;
+}
+
+.button:hover{
+  box-shadow: 0 14px 18px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  background:#86bbd8;
+  border: 2px #86bbd8;
+}
+
+.waving-text{
+    background: linear-gradient(269deg, #87bba2, #b8b56e, #c9e3ca);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; 
+    -webkit-animation: AnimationName 6s ease infinite;
+    animation: AnimationName 6s ease infinite;
+}
+
+.waving{
+    background: linear-gradient(269deg, #87bba2, #b8b56e, #c9e3ca);
+    background-size: 600% 600%;
+  
+    -webkit-animation: AnimationName 6s ease infinite;
+    animation: AnimationName 6s ease infinite;
+  }
+  
+  @-webkit-keyframes AnimationName {
+    0%{background-position:0% 49%}
+    50%{background-position:100% 52%}
+    100%{background-position:0% 49%}
+  }
+  @keyframes AnimationName {
+    0%{background-position:0% 49%}
+    50%{background-position:100% 52%}
+    100%{background-position:0% 49%}
+  }
