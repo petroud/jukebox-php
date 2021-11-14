@@ -42,6 +42,13 @@
 }
 
 
+.logoutbtn{
+  position: relative;
+  left:780px;
+  top:16px;
+}
+
+
 .dropbtn {
   background-color: #87bba2;
   color: white;
@@ -55,7 +62,7 @@
 .dropdown {
   position: relative;
   display: inline-block;
-  left:950px;
+  left:780px;
   top:15px;
 }
 
@@ -173,6 +180,7 @@
   font-family: Work Sans;
   font-size: 25px;
 }
+
 
 
 

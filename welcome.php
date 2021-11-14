@@ -80,6 +80,11 @@ session_start();
                          </a>
                      </div>
                 </div>
+                
+                <div>      
+                    <button class="logoutbtn">LOGOUT</button>
+                </div>
+
             </div>
 
             <div class="content">
