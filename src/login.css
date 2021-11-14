@@ -45,6 +45,20 @@
   color:white;
 }
 
+.error-msg{
+  margin-top: 5px;
+  font-family: sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color:#870900
+}
+
+p span{
+  background-color: rgba(255,255,255, 0.3);
+  padding:7px;
+  border-radius:20px
+}
+
 .content form{
   border-radius: 30px;
   width: 400px;
