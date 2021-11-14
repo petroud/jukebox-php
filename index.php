@@ -5,8 +5,7 @@ $_SESSION;
 
     include("connection.php");
     include("functions.php");
-
-
+    already_login($con);
 ?>
 
 <!DOCTYPE html>

@@ -1,4 +1,5 @@
 <?php
+    session_start();
 
     include("connection.php");
     include("functions.php");
@@ -18,7 +19,6 @@
                     $user_data = mysqli_fetch_assoc($result);
                     if($user_data['password'] === $password){
                         if($user_data['confirmed']){
-                            session_start();
                             $_SESSION['uname'] = $user_data['username'];
                             $_SESSION['user_id'] = $user_data['id'];
                             $_SESSION['first_name'] = $user_data['name'];
