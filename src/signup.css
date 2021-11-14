@@ -1,3 +1,18 @@
+.error-msg{
+  margin-top: 5px;
+  font-family: sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color:#870900;
+}
+
+p span{
+  background-color: rgba(255,255,255, 0.3);
+  padding:7px;
+  border-radius:20px;
+}
+
+
 .banner{
     width: 100%;
     height: 100vh;
@@ -45,6 +60,8 @@
   color:white;
 }
 
+
+
 .content form{
   border-radius: 30px;
   width: 400px;
@@ -53,6 +70,7 @@
   background: rgba(0, 0, 0, 0.35);
   padding: 20px;
   margin: 0% auto;
+  margin-top: -50px;
 }
 
 .content form h1{
@@ -118,13 +136,13 @@
 .favi{
   float:left;
   width:50px;
-  margin-top: -1px;
+  margin-top: -22px;
 }
 
 .favitext{
   float:left;
   width:150px;
-  margin-top: 14px;
+  margin-top: -7px;
   font-family: Work Sans;
   font-size: 17px;
   font-weight: 500;
