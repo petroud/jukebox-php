@@ -1,5 +1,4 @@
 <?php
-session_start();
 
     include("connection.php");
     include("functions.php");
@@ -19,9 +18,11 @@ session_start();
                     $user_data = mysqli_fetch_assoc($result);
                     if($user_data['password'] === $password){
                         if($user_data['confirmed']){
+                            session_start();
+                            $_SESSION['uname'] = $user_data['username'];
                             $_SESSION['user_id'] = $user_data['id'];
-                            $_SESSION['first_name'] = $user_data['firstname'];
-                            $_SESSION['last_name'] = $user_data['lastname'];
+                            $_SESSION['first_name'] = $user_data['name'];
+                            $_SESSION['last_name'] = $user_data['surname'];
                             $_SESSION['user_role'] = $user_data['role'];
 
                             header("Location: welcome.php");
