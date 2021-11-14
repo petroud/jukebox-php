@@ -41,13 +41,42 @@
   filter:  invert(25%);
 }
 
-
-.logoutbtn{
+.userico{
+  width: 25px;
   position: relative;
-  left:780px;
-  top:16px;
+  left:470px;
+  top:0px;
+}
+.userinfo{
+  position: relative;
+  left: 510px;
+  top:-48px;
+  font-size: 20px;
+  font-weight: 100px;
+  color: #fff;
 }
 
+.logoutbtn{
+  width: 65px;
+  height: 65px;
+  position: relative;
+  left:800px;
+  background-color: #b83939;
+  top:30px;
+}
+
+.logoutbtn img{
+  width:30px;
+  margin-left:5px;
+  margin-top:3px;
+  cursor:pointer;
+}
+
+.logoutbtn:hover{
+  box-shadow: 0 14px 18px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  background:#6e0b0b;
+  border: 0px #86bbd8;
+}
 
 .dropbtn {
   background-color: #87bba2;
@@ -62,8 +91,8 @@
 .dropdown {
   position: relative;
   display: inline-block;
-  left:780px;
-  top:15px;
+  left:800px;
+  top:30px;
 }
 
 /* Dropdown Content (Hidden by Default) */

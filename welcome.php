@@ -19,7 +19,7 @@ session_start();
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
 
-    <script src="./src/main.js"></script>
+    <script src="/src/welcome.js"></script>
 
     <style>
         body {
@@ -46,7 +46,7 @@ session_start();
                         <?php
                             if($_SESSION['user_role'] === "ADMIN"){
                                 echo 'ADMIN';
-                            }elseif($_SESSION['user_role'] === "EVENTORGANIZER"){
+                            }elseif($_SESSION['user_role'] === "ORGANIZER"){
                               echo 'ORGANIZER';
                             }elseif($_SESSION['user_role'] === "USER"){
                               echo 'USER';
@@ -61,7 +61,7 @@ session_start();
                          <?php
                             if($_SESSION['user_role'] === "ADMIN"){
                                 echo '<a href="administration.php">User Catalog Tools</a>';
-                            }elseif($_SESSION['user_role'] === "EVENTORGANIZER"){
+                            }elseif($_SESSION['user_role'] === "ORGANIZER"){
                                 echo '<a href="organizer.php">Organizer Tools</a>';
                             }elseif($_SESSION['user_role'] === "USER"){
                                 echo '<a href="concerts.php">Concerts</a>';
@@ -73,16 +73,22 @@ session_start();
                         ?>
 
                          <a href="mailto:admin@jukebox.com">Report a problem</a>
-                         <a href="logout.php">Logout from 
-                             <?php
-                                echo '<b>',$_SESSION['uname'],'<b>';
-                             ?>
-                         </a>
+                        
                      </div>
                 </div>
-                
                 <div>      
-                    <button class="logoutbtn">LOGOUT</button>
+                    <button id="logoutBtn" type="button" class="logoutbtn" title="Sign out from <?php echo $_SESSION['uname'];?>">
+                        <img src="assets/logout.png" alt="Logout">
+                    </button>
+                </div>
+                <div>
+                  <span> <img src="/assets/user.png" alt="User icon" class = "userico">
+                   <p class="userinfo">
+                       <?php 
+                            printf("%s %s (%s)",$_SESSION['last_name'],$_SESSION['first_name'], $_SESSION['user_role']);
+                       ?>
+                   </p>
+                    </span>
                 </div>
 
             </div>
