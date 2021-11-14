@@ -15,7 +15,7 @@ $_SESSION;
     <meta charset="utf-8">
     <title>Jukebox | Index</title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
-    <link rel="stylesheet" href="./src/main.css">
+    <link rel="stylesheet" href="/src/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
