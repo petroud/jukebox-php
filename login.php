@@ -4,7 +4,7 @@ session_start();
     include("connection.php");
     include("functions.php");
     $user_data = already_login($con);
-   
+    $activ_error = $auth_error = $data_form_error = false;
    
     if($_SERVER['REQUEST_METHOD'] == "POST"){
     
@@ -15,17 +15,30 @@ session_start();
             $query = "select * from users where username = '$username' limit 1";
             $result = mysqli_query($con, $query);
             if($result){
-                if($result && mysqli_num_rows($result) > 0){
+                if($result && mysqli_num_rows($result) === 1){
                     $user_data = mysqli_fetch_assoc($result);
                     if($user_data['password'] === $password){
-                        $_SESSION['user_id'] = $user_data['id'];
-                        header("Location: welcome.php");
-                        die;
+                        if($user_data['confirmed']){
+                            $_SESSION['user_id'] = $user_data['id'];
+                            $_SESSION['first_name'] = $user_data['firstname'];
+                            $_SESSION['last_name'] = $user_data['lastname'];
+                            $_SESSION['user_role'] = $user_data['role'];
+
+                            header("Location: welcome.php");
+                        }else{
+                            $activ_error = true;
+                        }
+                    }else{
+                        $auth_error = true;
                     }
+                }else{
+                    $auth_error = true;
                 }
+            }else{
+                $auth_error = true;
             }
         }else{
-            echo "Please review your information";
+            $data_form_error = true;   
         }
     }
 ?>
@@ -78,9 +91,23 @@ session_start();
                         <input name = "uname" type="text" class = "input-box" placeholder= "Username">
                         <input name = "pass" type="password" class = "input-box" placeholder= "Password"><br><br>
                         <input type="submit" class = "waving button" value="LOGIN"><br><br>
+                        <?php
+                            if($data_form_error){
+                                echo '<p class="error-msg"><span> Please fill in all required fields</span></p>';
+                            }
+                            if($auth_error){
+                                echo '<p class="error-msg"><span> Wrong username or password. Try again </span></p>';
+                            }
+                            if($activ_error){
+                                echo '<p class="error-msg"><span> Your account is not yet activated. Try again later </span></p>';
+                            }
+                        ?>
                         <a href="signup.php" class = "sign-up-ref"> Don't have an account? Sign up </a>
                     </form>
-                   
+
+
+
+                                     
                    
                 </div>
                 <div>
