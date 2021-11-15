@@ -72,6 +72,29 @@ h1{
   font-size: 25px;
 }
 
+.alert{
+  font-family: sans-serif;
+  font-weight: 600;
+  margin-top: -110px;
+  color: #7E0009;
+  letter-spacing: 1px;
+  font-size: 30px;
+  background: rgba(255, 255, 255, 0.35);
+  padding: 30px;
+  border-radius: 30px;
+  margin-left:420px;
+  width: 600px;
+}
+
+.submsg{
+  font-family: sans-serif;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 180px;
+  margin-left:0px;
+  font-size: 20px;
+}
+
 .waving-text{
   background: linear-gradient(269deg, #87bba2, #b8b56e, #c9e3ca);
   background-size: 400%;
