@@ -16,11 +16,14 @@ session_start();
     <title>Jukebox | Users Console</title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/users.css">
+    <link rel="stylesheet" href="/src/tablesorter.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
-
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/src/welcome.js"></script>
+    <script src="/src/tablesort.js"></script>
 
     <style>
         .wrapper{
@@ -37,11 +40,6 @@ session_start();
           overflow:auto;
         }
         </style>
-     <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();   
-        });
-    </script>
 </head>
 
 
@@ -114,7 +112,7 @@ session_start();
                     $sql = "SELECT * FROM users";
                     if($result = mysqli_query($con, $sql)){
                         if(mysqli_num_rows($result) > 0){
-                            echo '<table class="content-table">';
+                            echo '<table class="content-table table-sortable">';
                                 echo "<thead>";
                                     echo "<tr>";
                                         echo "<th>ID</th>";
