@@ -136,7 +136,7 @@ session_start();
                                     echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                     echo '<div><h2>Genres: ' . $row['category'] . '</h2></div>';
                                     echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
-                                    echo '<div><a href="/tools/fave.php?id=' . $row['id'] . '"><button class="favorite-button"'. decide_Color($row['id'],$con) .'><img src="/assets/heart.png" alt="fave"></button></a></div>';
+                                    echo '<div><a href="/tools/fave.php?id=' . $row['id'] . '&src=concerts"><button class="favorite-button"'. decide_Color($row['id'],$con) .'><img src="/assets/heart.png" alt="fave"></button></a></div>';
                                     echo '</li>';
                         }
                             }
@@ -145,7 +145,6 @@ session_start();
                     </ul>
                 </div>
                 <div class="divider"> 
-                    <button class="favorite-button" ><img src="/assets/heart.png" alt="fave"></button>
                 </div>
 
               

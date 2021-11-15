@@ -19,6 +19,8 @@
         $addQuery = "INSERT INTO favorites(id,user_id,concert_id) values('$userID". $idconcert ."', '$userID','$idconcert')";
         mysqli_query($con, $addQuery);
     }
-    header("Location: ../concerts.php");
+
+    $location = $_GET['src'];
+    header("Location: ../" . $location .".php");
 
 ?>
