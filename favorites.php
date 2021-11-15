@@ -40,7 +40,8 @@ session_start();
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
 
-    <script src="/src/welcome.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/src/favorites.js"> </script>
 
     <style>
         body {
@@ -131,15 +132,15 @@ session_start();
                         if($result = mysqli_query($con, $query)){
                             if(mysqli_num_rows($result) > 0){
                                 while($row = mysqli_fetch_array($result)){
-                                    echo '<li class="concert-box">';
+                                    echo '<li class="concert-box" id="fave'.$row['id'].'">';
                                     echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
                                     echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                     echo '<div><h2>Genres: ' . $row['category'] . '</h2></div>';
                                     echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
-                                    echo '<div><a href="/tools/fave.php?id=' . $row['id'] . '&src=favorites"><button class="favorite-button"'. decide_Color($row['id'],$con) .'><img src="/assets/heart.png" alt="fave"></button></a></div>';
+                                    echo '<div><button class="favorite-button" onclick="delFave('. $row['id'] .')"><img src="/assets/remove.png" alt="rfave"></button></div>';
                                     echo '</li>';
-                        }
-                            }
+                                }
+                            }           
                         }
                         ?>
                     </ul>
