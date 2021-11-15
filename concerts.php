@@ -124,7 +124,7 @@ session_start();
                         if($result = mysqli_query($con, $query)){
                             if(mysqli_num_rows($result) > 0){
                                 while($row = mysqli_fetch_array($result)){
-                                    echo '<li class="concert-box">';
+                                    echo '<li class="concert-box" cid='.$row['id'].'>';
                                     echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
                                     echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                     echo '<div><h2>Genres: ' . $row['category'] . '</h2></div>';
