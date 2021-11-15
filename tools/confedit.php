@@ -5,12 +5,12 @@
     $user_data = check_login($con);
     check_admin();
     
-    $idToChangeConfState = $_GET['id'];
+    $idToChangeConfState = $_POST['uid'];
     if($_SESSION['user_id'] === $idToChangeConfState or $idToChangeConfState == 1){
-        header("Location: ../administration.php");
+        $error="Not Allowed";
+        echo $error;
         die;
     }
-    $queryStruct = "UPDATE users SET confirmed = NOT confirmed WHERE id='$idToChangeConfState'";
+    $queryStruct = "UPDATE users SET confirmed = NOT confirmed WHERE id=$idToChangeConfState";
     mysqli_query($con,$queryStruct);
-    header("Location: ../administration.php");
 ?>

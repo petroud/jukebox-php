@@ -24,6 +24,8 @@ session_start();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/src/welcome.js"></script>
     <script src="/src/tablesort.js"></script>
+    <script src="/src/users.js"></script>
+
 
     <style>
         .wrapper{
@@ -127,7 +129,7 @@ session_start();
                                 echo "</thead>";
                                 echo "<tbody>";
                                 while($row = mysqli_fetch_array($result)){
-                                    echo "<tr>";
+                                    echo "<tr id=row_".$row['id'].">";
                                         echo "<td>" . $row['id'] . "</td>";
                                         echo "<td>" . $row['name'] . "</td>";
                                         echo "<td>" . $row['surname'] . "</td>";
@@ -135,14 +137,14 @@ session_start();
                                         echo "<td>" . $row['email'] . "</td>";
                                         echo "<td>" . $row['role'] . "</td>";
                                         if($row['confirmed'] == 1){
-                                            echo "<td>" . 'Activated' . "</td>";
+                                            echo "<td id=status_".$row['id'].">" . 'Confirmed' . "</td>";
                                         }else{
-                                            echo "<td>" . 'Deactivated' . "</td>";
+                                            echo "<td id=status_".$row['id'].">" . 'Deactivated' . "</td>";
                                         }
                                         echo "<td>";
-                                            echo '<a href="/tools/confedit.php?id='. $row['id'] .'"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
+                                            echo '<a href="javascript:statusUser('.$row['id'].');"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
                                             echo '<a href="/tools/update.php?id='. $row['id'] .'"><img class = "conf-ico" src="/assets/editing.png" alt="change confirmed"></a>';
-                                            echo '<a href="/tools/userdel.php?id='. $row['id'] .'"><img class = "conf-ico" src="/assets/bin.png" alt="change confirmed"></a>';
+                                            echo '<a href="javascript:delUser('.$row['id'].');"><img class = "conf-ico" src="/assets/bin.png" alt="change confirmed"></a>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }

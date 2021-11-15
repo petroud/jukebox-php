@@ -5,13 +5,10 @@
     $user_data = check_login($con);
     check_admin();
 
-
-    $idToDelete = $_GET['id'];
+    $idToDelete = $_POST['uid'];
     if($_SESSION['user_id'] === $idToDelete or $idToDelete == 1){
-        header("Location: ../administration.php");
         die;
     }
-    $queryStruct = "DELETE FROM users WHERE id='$idToDelete'";
+    $queryStruct = "DELETE FROM users WHERE id=$idToDelete";
     mysqli_query($con,$queryStruct);
-    header("Location: ../administration.php");
 ?>
