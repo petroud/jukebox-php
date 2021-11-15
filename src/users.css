@@ -1,13 +1,13 @@
 .content-table{
     border-collapse: collapse;
-    margin: 25px 0;
+    margin: 5px ;
     font-size: 18px;
     color: black;
     min-width: 400px;
     position: relative;
+    overflow: hidden;
     border-radius: 30px;
     box-shadow: 0px 16px 16px 0px rgba(0,0,0,0.3);
-    overflow:hidden;
     left: 50px
 }
 
@@ -39,6 +39,10 @@
     background-color: #fff;
 }
 
+.divider{
+  min-height: 100px;
+}
+
 .conf-ico{
   width:20px;
   padding: 5px 10px;
@@ -51,7 +55,6 @@
 .banner{
     width: 100%;
     height: 100vh;
-    overflow: hidden;
     position: relative;
 }
 

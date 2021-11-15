@@ -34,6 +34,7 @@ session_start();
           background-attachment: fixed;
           font-family: "Roboto",sans-serif;
           font-family: 'Work Sans', sans-serif;
+          overflow:auto;
         }
         </style>
      <script>
@@ -155,8 +156,12 @@ session_start();
                             echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
                         }
                     } else{
-                        echo "Oops! Something went wrong. Please try again later.";
+                        echo "Something went wrong. Please try again later.";
                     }
                     ?>
+                </div>
+            <div class="divider">
+
+            </div>
     </div>
 </body>
