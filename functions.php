@@ -90,3 +90,19 @@ function check_user(){
         header("Location: /index.php");
     }
 }
+
+
+function check_organizer(){
+
+    if(isset($_SESSION['user_id'])){
+           
+        if($_SESSION['user_role'] === "ORGANIZER"){
+            //do nothing
+        }else{
+            header("Location: /authfailed.php");
+        }
+        
+    }else{
+        header("Location: /index.php");
+    }
+}
