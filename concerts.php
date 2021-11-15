@@ -16,14 +16,6 @@ session_start();
         }else{
             return false;
         }
-    }     
-
-    function decide_Color($id,$con){
-        if(isFave($id,$con)){
-            return 'style="background-color: #d62b2b;"';
-        }else{
-            // return nothing
-        }
     }
 ?>
 
@@ -41,7 +33,8 @@ session_start();
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
 
     <script src="/src/welcome.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/src/concerts.js"> </script>
     <style>
         body {
           background-image: url('cdn/background.jpg');
@@ -136,9 +129,16 @@ session_start();
                                     echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                     echo '<div><h2>Genres: ' . $row['category'] . '</h2></div>';
                                     echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
-                                    echo '<div><a href="/tools/fave.php?id=' . $row['id'] . '&src=concerts"><button class="favorite-button"'. decide_Color($row['id'],$con) .'><img src="/assets/heart.png" alt="fave"></button></a></div>';
+                                    $class = $func = "";
+                                    if(isFave($row['id'],$con)){
+                                        $class = "faved";
+                                        $func = "removeFave(".$row['id'].")";
+                                    }else{
+                                        $func = "addFave(".$row['id'].")";
+                                    }
+                                    echo '<div><button class="favorite-button unfaved '.$class.'" id="btnconcert'. $row['id'] .'" onclick="'.$func.'"><img src="" alt="fave" id="imgconcert'. $row['id'] .'"></button></div>';
                                     echo '</li>';
-                        }
+                                }
                             }
                         }
                         ?>

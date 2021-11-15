@@ -3,10 +3,10 @@
 }
 
 .favorite-button{
-    width: 60px;
-    height: 60px;
-    border-radius: 50px;    
-    background-color: #666666;
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: #666666;
 }
 
 .favorite-button:hover{
@@ -15,8 +15,30 @@
 }
 
 .favorite-button img{
-  margin-top: 2px;
-  width: 30px;
+  margin-top: -3px;
+  max-width: 60%;
+  height: auto;
+}
+
+.faved{
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: rgb(255,255,255) !important;
+}
+
+.unfaved{
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: rgb(255,255,255) !important;
+}
+
+.faved img{
+  content: url(/assets/heartfull.png) !important;
+}
+.unfaved img{
+  content: url(/assets/heartempty.png);
 }
 
 
