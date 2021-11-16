@@ -42,6 +42,7 @@ session_start();
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/src/favorites.js"> </script>
+    <script src="/src/welcome.js"> </script>
 
     <style>
         body {
