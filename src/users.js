@@ -1,16 +1,20 @@
 
 function delUser(id){
-    $.ajax({
-        type:'post',
-        url:'/tools/userdel.php',
-        data:{
-            uid:id 
-        },
-        success:function(data){
-            $('#row_'+id).hide('slow');
-        }
-    });
+
+    if(confirm('Permanently delete user '+$('#uname_'+id).html()+' from Jukebox')){
+        $.ajax({
+            type:'post',
+            url:'/tools/userdel.php',
+            data:{
+                uid:id 
+            },
+            success:function(data){
+                $('#row_'+id).hide('slow');
+            }
+        });
+    }
 }
+
 
 
 function statusUser(id){
@@ -33,5 +37,3 @@ function statusUser(id){
         }
     });
 }
-
-

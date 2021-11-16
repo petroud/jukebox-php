@@ -26,6 +26,7 @@
 }
 .content-table td{
     padding:10px 30px;
+    border-bottom: 1px solid #87bba2
 }
 
 .content-table tbody tr{
@@ -33,10 +34,7 @@
 }
 
 .content-table tr{
-    background-color: #e6e6e6;
-}
-.content-table tr:nth-of-type(even){
-    background-color: #fff;
+    background-color: rgba(255,255,255,0.8);
 }
 
 .divider{
