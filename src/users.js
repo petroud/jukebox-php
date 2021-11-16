@@ -30,9 +30,9 @@ function statusUser(id){
                 return;
             }
             if($('#status_'+id).html() === "Confirmed"){
-                $('#status_'+id).html('Deactivated');
+                $('#status_'+id).html('Deactivated').attr("style","color:red");
             }else{
-                $('#status_'+id).html('Confirmed');
+                $('#status_'+id).html('Confirmed').attr("style","color:green");
             }
         }
     });

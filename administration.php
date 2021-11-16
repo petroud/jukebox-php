@@ -137,9 +137,9 @@ session_start();
                                         echo "<td>" . $row['email'] . "</td>";
                                         echo "<td>" . $row['role'] . "</td>";
                                         if($row['confirmed'] == 1){
-                                            echo "<td id=status_".$row['id'].">" . 'Confirmed' . "</td>";
+                                            echo "<td id=status_".$row['id']." style=\"color:green;\">" . 'Confirmed' . "</td>";
                                         }else{
-                                            echo "<td id=status_".$row['id'].">" . 'Deactivated' . "</td>";
+                                            echo "<td id=status_".$row['id']." style=\"color:red;\">"  . 'Deactivated' . "</td>";
                                         }
                                         echo "<td>";
                                             echo '<a href="javascript:statusUser('.$row['id'].');"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
