@@ -22,11 +22,11 @@ session_start();
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+
     <script src="/src/welcome.js"></script>
     <script src="/src/tablesort.js"></script>
     <script src="/src/users.js"></script>
-
-
     <style>
         .wrapper{
             width: 600px;
@@ -133,7 +133,7 @@ session_start();
                                         echo "<td>" . $row['id'] . "</td>";
                                         echo "<td>" . $row['name'] . "</td>";
                                         echo "<td>" . $row['surname'] . "</td>";
-                                        echo "<td>" . $row['username'] . "</td>";
+                                        echo "<td id=uname_".$row['id'].">". $row['username'] . "</td>";
                                         echo "<td>" . $row['email'] . "</td>";
                                         echo "<td>" . $row['role'] . "</td>";
                                         if($row['confirmed'] == 1){
