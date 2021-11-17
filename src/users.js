@@ -26,7 +26,7 @@ function statusUser(id){
         },
         success:function(data){
             if(data === "Not Allowed"){
-                $('#status_'+id).text('Not Allowed').show().delay(1000).fadeOut(500,function(){$('#status_'+id).text('Confirmed').show()});
+                $('#status_'+id).text('Not Allowed').attr("style","color:orange").show().delay(1000).fadeOut(500,function(){$('#status_'+id).text('Confirmed').attr("style","color:green").show()});
                 return;
             }
             if($('#status_'+id).html() === "Confirmed"){
