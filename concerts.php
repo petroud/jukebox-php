@@ -31,10 +31,13 @@ session_start();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <script src="/src/welcome.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/src/concerts.js"> </script>
+    <script src="/src/filter.js"> </script>
+   
     <style>
         body {
           background-image: url('cdn/background.jpg');
@@ -55,6 +58,29 @@ session_start();
 
 
 <body>
+    <div class = "filter-button-div" id="filterBtn">
+            <button onclick ="showFilters()" class="filter-button"><img src="/assets/filter.png" alt="Filter Concerts"></button>
+    </div>
+    <div class = "filter-box" id="filterBox">
+            <div class = "title"><h1>Filters</h1></div>
+            
+            <div><h2>Artist Name</h2>
+            <input type="text" class="input-box" id="artistCriteria" placeholder="Enter artist name">
+            </div>
+            
+            <div><h2>Genre</h2>
+            <input type="text" class="input-box" id="genreCriteria" placeholder="Enter genre (e.g. Rock)">
+            </div>
+
+            <div><h2>Date</h2>
+            <input type="date" class="input-box" id="dateCriteria" >
+            </div>
+
+            <div><h2>Organized by</h2>
+            <input type="text" class="input-box" id="unameCriteria" placeholder="Enter Username" >
+            </div>
+    </div>
+    <div class = "bottom-arrow" id="filterBoxArrow"></div>
     <div class="banner">
             <div class="navbar">
                 <div class="logo">
@@ -124,7 +150,7 @@ session_start();
                         if($result = mysqli_query($con, $query)){
                             if(mysqli_num_rows($result) > 0){
                                 while($row = mysqli_fetch_array($result)){
-                                    echo '<li class="concert-box" cid='.$row['id'].'>';
+                                    echo '<li class="concert-box" cid="'.$row['id']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['username'].'" date="'.$row['date'].'">';
                                     echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
                                     echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                     echo '<div><h2>Genres: ' . $row['category'] . '</h2></div>';
@@ -143,13 +169,15 @@ session_start();
                         }
                         ?>
                     </ul>
-                </div>
-                <div class="divider"> 
+
                 </div>
 
-              
+                
+                <div class="divider"> 
+                </div>
                 
             </div>
-            <div></div>
     </div>
+
+   
 </body>

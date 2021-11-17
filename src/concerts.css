@@ -20,6 +20,95 @@
   height: auto;
 }
 
+.filter-button-div{
+  width:100px;
+  height:100px;
+  margin-left: 170px;
+  position: fixed;
+  margin-top: 770px;
+  z-index: 1000;
+}
+
+.filter-box{
+  width: 300px;
+  height: 600px;
+  border-radius: 40px;
+  background-color: rgba(135,187,162,0.8);
+  position: fixed;
+  margin-left: 75px;
+  margin-top:140px;
+  display: none;
+  z-index: 1000;
+}
+
+.bottom-arrow {
+  position: fixed;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 0;
+  height: 0;
+  margin-top:740px;
+  margin-left:178px;
+  border-top: 25px solid rgba(135,187,162,0.8);
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;  
+  display: none;
+}
+
+.filter-box .title{
+  margin-left: 60px;
+  width: 60%;
+  background-color: #86bbd8;
+  border-radius: 30px;
+  z-index: 1001;
+}
+
+.filter-box h1{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left:45px;
+  color:#fff;
+  font-family: Work Sans;
+}
+
+
+.filter-box h2{
+  margin-left:30px !important;
+  color:#fff;
+}
+
+.input-box{
+  margin-left: 30px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-family: sans-serif;
+  padding:15px;
+  background-color:solid #fff;
+  width: 70%;
+  border: 0px transparent;
+  outline: none;
+}
+
+
+.input-box:focus{
+  box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.5), 0 0 10px 0 rgba(255,255,255,0.19);
+}
+
+
+
+.filter-button{
+  border-radius: 40px;
+  height: 80px;
+  width: 80px;
+  background-color: #87bba2;
+}
+
+.filter-button img{
+  max-width: 60%;
+  margin-top: 3px;
+}
+
 .faved{
   width: 60px;
   height: 60px;
