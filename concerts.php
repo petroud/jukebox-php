@@ -34,7 +34,6 @@ session_start();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-    <script src="/src/welcome.js"></script>
     <script src="/src/concerts.js"> </script>
     <script src="/src/filter.js"> </script>
    
@@ -122,7 +121,7 @@ session_start();
                      </div>
                 </div>
                 <div>      
-                    <button id="logoutBtn" type="button" class="logoutbtn" title="Sign out from <?php echo $_SESSION['uname'];?>">
+                    <button id="logoutBtn" type="button" class="logoutbtn" onclick="logout()" title="Sign out from <?php echo $_SESSION['uname'];?>">
                         <img src="assets/logout.png" alt="Logout">
                     </button>
                 </div>

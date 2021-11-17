@@ -10,9 +10,12 @@ function showFilters() {
     }
 }
 
+function logout(){
+  location.href = "logout.php";
+}
+
 
 window.onload = function(){
-  console.log($('#dateCriteria').val());
 
   $('#artistCriteria').on('input',function(){
     
