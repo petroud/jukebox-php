@@ -49,7 +49,7 @@ session_start();
 
 <body>
     <div class="overlay" id="editorback"> 
-        <div class="editor-box">
+        <div class="editor-box" id="editor-box">
             <h1><span class="waving">Edit User Information</span></h1>
                     <form method="post" class="editor-form">
                         <input name = "fname" type="text" class = "input-box" placeholder= "First Name" id="edit_fname">
