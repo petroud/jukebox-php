@@ -63,6 +63,10 @@ session_start();
     <div class = "filter-box" id="filterBox">
             <div class = "title"><h1>Filters</h1></div>
             
+            <div><h2>Title</h2>
+            <input type="text" class="input-box" id="titleCriteria" placeholder="Enter concert title">
+            </div>
+            
             <div><h2>Artist Name</h2>
             <input type="text" class="input-box" id="artistCriteria" placeholder="Enter artist name">
             </div>
@@ -149,7 +153,7 @@ session_start();
                         if($result = mysqli_query($con, $query)){
                             if(mysqli_num_rows($result) > 0){
                                 while($row = mysqli_fetch_array($result)){
-                                    echo '<li class="concert-box" cid="'.$row['id']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['username'].'" date="'.$row['date'].'">';
+                                    echo '<li class="concert-box" cid="'.$row['id'].'" title="' .$row['title']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['username'].'" date="'.$row['date'].'">';
                                     echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
                                     echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                     echo '<div><h2>Genres: ' . $row['category'] . '</h2></div>';

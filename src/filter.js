@@ -17,8 +17,28 @@ function logout(){
 
 window.onload = function(){
 
+  $('#titleCriteria').on('input',function(){
+    $('#artistCriteria').val('')
+    $('#genreCriteria').val('')
+    $('#dateCriteria').val('')
+    $('#unameCriteria').val('')
+
+    $('.concert-box').each(function(){
+        if($(this).attr("title").toLowerCase().indexOf($('#titleCriteria').val().toLowerCase()) == -1){
+            $(this).hide('slow');
+        }else{
+            $(this).show('slow');
+        }
+    })
+  })
+
+
   $('#artistCriteria').on('input',function(){
-    
+    $('#titleCriteria').val('')
+    $('#genreCriteria').val('')
+    $('#dateCriteria').val('')
+    $('#unameCriteria').val('')
+
     $('.concert-box').each(function(){
         if($(this).attr("artist").toLowerCase().indexOf($('#artistCriteria').val().toLowerCase()) == -1){
             $(this).hide('slow');
@@ -29,7 +49,11 @@ window.onload = function(){
   })
 
   $('#genreCriteria').on('input',function(){
-    
+    $('#titleCriteria').val('')
+    $('#artistCriteria').val('')
+    $('#dateCriteria').val('')
+    $('#unameCriteria').val('')
+
     $('.concert-box').each(function(){
         if($(this).attr("genre").toLowerCase().indexOf($('#genreCriteria').val().toLowerCase()) == -1){
             $(this).hide('slow');
@@ -40,6 +64,11 @@ window.onload = function(){
   })
 
   $('#dateCriteria').change(function(){
+    $('#titleCriteria').val('')
+    $('#genreCriteria').val('')
+    $('#artistCriteria').val('')
+    $('#unameCriteria').val('')
+
     var dateCr = $('#dateCriteria').val();
     $('.concert-box').each(function(){
         var thisDate = $(this).attr("date");
@@ -56,7 +85,11 @@ window.onload = function(){
   })
 
   $('#unameCriteria').on('input',function(){
-    
+    $('#titleCriteria').val('')
+    $('#genreCriteria').val('')
+    $('#dateCriteria').val('')
+    $('#artistCriteria').val('')
+
     $('.concert-box').each(function(){
         if($(this).attr("organizer").toLowerCase().indexOf($('#unameCriteria').val().toLowerCase()) == -1){
             $(this).hide('slow');
