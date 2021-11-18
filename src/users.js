@@ -45,6 +45,14 @@ function editUser(id){
         x.style.display = "block";
     }  
 
+    $(document).mouseup(function(e) {
+        var container = $("#editor-box");
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0){
+            x.style.display = "none"
+        }
+    });
+
     var userData = [];
 
     $('#row_'+id).find('td').each(function () {  
