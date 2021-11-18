@@ -21,9 +21,9 @@
 }
 
 .filter-button-div{
-  width:100px;
-  height:100px;
-  margin-left: 170px;
+  width: 120px;
+  height:120px;
+  margin-left: 155px;
   position: fixed;
   margin-top: 770px;
   z-index: 1000;
@@ -31,12 +31,12 @@
 
 .filter-box{
   width: 300px;
-  height: 600px;
+  height: 700px;
   border-radius: 40px;
   background-color: rgba(135,187,162,0.8);
   position: fixed;
   margin-left: 75px;
-  margin-top:140px;
+  margin-top:40px;
   display: none;
   z-index: 1000;
 }
@@ -98,14 +98,14 @@
 
 
 .filter-button{
-  border-radius: 40px;
-  height: 80px;
-  width: 80px;
+  border-radius: 60px;
+  height: 110px;
+  width: 110px;
   background-color: #87bba2;
 }
 
 .filter-button img{
-  max-width: 60%;
+  max-width: 70%;
   margin-top: 3px;
 }
 
