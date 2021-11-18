@@ -9,7 +9,26 @@
   display: none;
 }
 
+.add-button{
+  width:100px;
+  height:100px;
+  margin-left:650px;
+  margin-top: -120px;
+  position: absolute;
+  z-index: 999;
+  background-color: #86bbd8;
+}
 
+.add-button:hover{
+  box-shadow: 0 14px 18px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  background:#87bba2;
+  border: 2px #87bba2;
+}
+
+.add-button img{
+  width: 50%;
+  margin-top: 6px;
+}
 
 .content-table{
     border-collapse: collapse;
@@ -203,17 +222,6 @@
   letter-spacing: 1px;
   font-size:40px;
   margin-right: 100px;
-}
-.add-button{
-  width:100px;
-  height:100px;
-  margin-left:650px;
-  margin-top: -120px;
-  position: absolute;
-  z-index: 1000;
-}
-.add-button img{
-  width: 80%;
 }
 
 

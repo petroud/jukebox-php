@@ -16,7 +16,6 @@ session_start();
     <title>Jukebox | Users Console</title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/organizer.css">
-    <link rel="stylesheet" href="/src/tablesorter.css">
     <link rel="stylesheet" href="/src/editor.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +24,6 @@ session_start();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="/src/welcome.js"></script>
-    <script src="/src/tablesort.js"></script>
     <script src="/src/organizer.js"></script>
 
 
@@ -48,7 +46,7 @@ session_start();
 <body> 
     <div class="overlay" id="editorback"> 
         <div class="editor-box" id="editor-box">
-            <h1><span class="waving">Edit Concert Information</span></h1>
+            <h1><span class="waving" style="margin-left:-20px !important">Edit Concert Information</span></h1>
                     <form method="post" class="editor-form">
                         <input name = "title" type="text" class = "input-box" placeholder= "Concert Title" id="edit_title">
                         <input name = "artist" type="text" class = "input-box" placeholder= "Artist Name" id="edit_artist" >
@@ -58,6 +56,21 @@ session_start();
                         <button type="button" class="button" onclick="submitEdits()">Submit</button>
                         <button type="button" class="button btn-2 repos" onclick="closeEditor()" id="exitbtn">Cancel</button>
                         <div class="resultBox" id="resBox"><p class="result-msg" id="resMsg"></p></div>
+                    </form>
+        </div>
+    </div> 
+
+    <div class="overlay" id="adderback"> 
+        <div class="editor-box" id="adder-box">
+            <h1><span class="waving" style="margin-left: 30px !important">Add New Concert</span></h1>
+                    <form method="post" class="editor-form">
+                        <input name = "title" type="text" class = "input-box" placeholder= "Concert Title" id="new_title">
+                        <input name = "artist" type="text" class = "input-box" placeholder= "Artist Name" id="new_artist" >
+                        <input name = "date" type="date" class = "input-box" placeholder= "Date" id="new_date">
+                        <input name = "genre" type="text" class = "input-box" placeholder= "Genre" id="new_genre">
+                        <button type="button" class="button" onclick="addConcert()">Add</button>
+                        <button type="button" class="button btn-2 repos" onclick="closeAdder()" id="addExitbtn">Cancel</button>
+                        <div class="resultBox" id="addResBox"><p class="result-msg" id="addResMsg"></p></div>
                     </form>
         </div>
     </div> 
@@ -121,7 +134,7 @@ session_start();
 
     <div class="content" id="content"> 
                 <div><h1><span>My Concerts and Events</span></h1>
-                    <button onclick ="addConcert()" class="add-button"><img src="/assets/filter.png" alt="Filter Concerts"></button>
+                    <button onclick ="newConcert()" class="add-button"><img src="/assets/plus.png" alt="Filter Concerts"></button>
                 </div>
                               
             <?php
@@ -132,7 +145,7 @@ session_start();
 
                     if($result = mysqli_query($con, $sql)){
                         if(mysqli_num_rows($result) > 0){
-                            echo '<table class="content-table table-sortable">';
+                            echo '<table class="content-table" id="concert-table">';
                                 echo "<thead>";
                                     echo "<tr>";
                                         echo "<th>ID</th>";
