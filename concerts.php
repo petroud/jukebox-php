@@ -71,8 +71,8 @@ session_start();
             <input type="text" class="input-box" id="artistCriteria" placeholder="Enter artist name">
             </div>
             
-            <div><h2>Genre</h2>
-            <input type="text" class="input-box" id="genreCriteria" placeholder="Enter genre (e.g. Rock)">
+            <div><h2>Category</h2>
+            <input type="text" class="input-box" id="genreCriteria" placeholder="Enter category (e.g. Rock)">
             </div>
 
             <div><h2>Date</h2>
@@ -156,7 +156,7 @@ session_start();
                                     echo '<li class="concert-box" cid="'.$row['id'].'" title="' .$row['title']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['username'].'" date="'.$row['date'].'">';
                                     echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
                                     echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
-                                    echo '<div><h2>Genres: ' . $row['category'] . '</h2></div>';
+                                    echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
                                     echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
                                     $class = $func = "";
                                     if(isFave($row['id'],$con)){
