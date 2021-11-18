@@ -17,6 +17,7 @@ session_start();
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/users.css">
     <link rel="stylesheet" href="/src/tablesorter.css">
+    <link rel="stylesheet" href="/src/editor.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
@@ -47,6 +48,26 @@ session_start();
 
 
 <body>
+    <div class="overlay" id="editorback"> 
+        <div class="editor-box">
+            <h1><span class="waving">Edit User Information</span></h1>
+                    <form method="post" class="editor-form">
+                        <input name = "fname" type="text" class = "input-box" placeholder= "First Name" id="edit_fname">
+                        <input name = "lname" type="text" class = "input-box" placeholder= "Last Name" id="edit_lname" >
+                        <input name = "username" type="text" class = "input-box" placeholder= "Username" id="edit_uname" readonly>
+                        <input name = "email" type="text" class = "input-box" placeholder= "Email" id="edit_mail">
+                        <input type="hidden" name="id" value="" id="key_field">
+                        <select name="role_select" class = "input-box styleselect" id="edit_role">
+                                <option value="ADMIN">Admin</option>
+                                <option value="ORGANIZER">Organizer</option>
+                                <option value="USER">User</option>
+                        </select><br><br>
+                        <button type="button" class="button" onclick="submitEdits()">Submit</button>
+                        <button type="button" class="button btn-2 repos" onclick="closeEditor()" id="exitbtn">Cancel</button>
+                        <div class="resultBox" id="resBox"><p class="result-msg" id="resMsg"></p></div>
+                    </form>
+        </div>
+    </div> 
     <div class="banner">
             <div class="navbar">
                 <div class="logo">
@@ -143,7 +164,7 @@ session_start();
                                         }
                                         echo "<td>";
                                             echo '<a href="javascript:statusUser('.$row['id'].');"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
-                                            echo '<a href="/tools/update.php?id='. $row['id'] .'"><img class = "conf-ico" src="/assets/editing.png" alt="change confirmed"></a>';
+                                            echo '<a href="javascript:editUser('. $row['id'] .');"><img class = "conf-ico" src="/assets/editing.png" alt="change confirmed"></a>';
                                             echo '<a href="javascript:delUser('.$row['id'].');"><img class = "conf-ico" src="/assets/bin.png" alt="change confirmed"></a>';
                                         echo "</td>";
                                     echo "</tr>";

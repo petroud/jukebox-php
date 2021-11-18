@@ -19,6 +19,16 @@
     font-weight: bold;
     
 }
+.overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: rgba(0,0,0,0.5); /*dim the background*/
+  display: none;
+}
 
 .content-table th{
     border-top: none;
@@ -185,6 +195,7 @@
 }
 
 .content h1{
+  margin-right: 100px;
   font-weight: 600;
   font-family: Work Sans;
   letter-spacing: 1px;
