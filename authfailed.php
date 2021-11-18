@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="/src/autherror.js"></script>
 
@@ -47,7 +48,7 @@
                    <h1 class = "alert"> 
                        <span>You don't have the required rights to access this page</span>
                    </h1>
-                   <p class = "submsg"> You will be redirected in 3 seconds...</p>
+                   <p class = "submsg" id="redmsg"> You will be redirected in 3 seconds...</p>
                     
                 </div>
                 

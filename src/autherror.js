@@ -1,6 +1,6 @@
 window.onload = function(){
     function pageRedirect(){
-        var delay = 4000; // time in ms
+        var delay = 4200; // time in ms
                
         setTimeout(function(){
          window.location = "index.php";
@@ -9,3 +9,16 @@ window.onload = function(){
     }
     pageRedirect();
 }
+
+$(document).ready(function (param) {  
+
+    $('#redmsg').delay(1000).fadeOut(0, function(){
+                                $('#redmsg').text('You will be redirected in 2 seconds...').show().delay(1000)
+                                .fadeOut(0, function(){
+                                    $('#redmsg').text('You will be redirected in 1 second...').show().delay(1000)
+                                        .fadeOut(0, function(){
+                                            $('#redmsg').text('Redirecting you...').show()
+                                        })
+                                            })
+                            })    
+})
