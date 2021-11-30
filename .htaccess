@@ -1,0 +1,74 @@
+RewriteEngine On
+
+#---------------------------------- USERS --------------------------------#
+
+    #Get all users redirection rule
+    #e.g. /api/users
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/users$ ./api/api-get-users.php [NC,L]
+
+    #Get user with specific id redirection rule
+    #e.g /api/user/3201
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/user/(.*)$ ./api/api-get-users.php?id=$1 [QSA,NC,L]
+
+    #Create new user redirection rule, accompanied by data in request 
+    #e.g. /api/users/new (JSON data included)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/users/new$ ./api/api-create-user.php [NC,L]
+
+    #Delete user with specific id redirection rule
+    #e.g /api/user/delete/381
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/user/delete/(.*)$ ./api/api-delete-user.php?id=$1 [QSA,NC,L]
+
+    #Update user with specific id redirection rule, accompanied by data in request
+    #e.g /api/user/update/381 (JSON data included)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/user/update/(.*)$ ./api/api-update-user.php?id=$1 [QSA,NC,L]
+
+#-------------------------------------------------------------------------#
+
+
+#--------------------------------- CONCERTS ------------------------------#
+
+    #Get all concerts redirection rule
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/concerts$ ./api/api-get-concerts.php [NC,L]
+
+    #Get concert with specific id
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/concerts/(.*)$ ./api/api-get-concerts.php?id=$1 [QSA,NC,L]
+
+    #Create new concert redirection rule, accompanied by data in request 
+    #e.g. /api/concerts/new (JSON data included)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/concerts/new$ ./api/api-create-concert.php [NC,L]
+
+    #Delete concert with specific id redirection rule
+    #e.g /api/concert/delete/381
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/concert/delete/(.*)$ ./api/api-delete-concert.php?id=$1 [QSA,NC,L]
+
+    #Update user with specific id redirection rule, accompanied by data in request
+    #e.g /api/concert/update/381 (JSON data included)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/concert/update/(.*)$ ./api/api-update-concert.php?id=$1 [QSA,NC,L]
+
+#-------------------------------------------------------------------------#
+
+#-------------------------------- FAVORITES ------------------------------#
+
+    #Get all concerts of user redirection rule
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/favorites/(.*)$ ./api/api-get-favorites.php?id=$1 [QSA,NC,L]
+
+    #Delete favorite redirection rule (fave_id)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/favorite/delete/(.*)$ ./api/api-delete-favorite.php?id=$1 [QSA,NC,L]
+
+    #Create favorite of user redirection rule (concert_id)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/favorite/new/(.*)$ ./api/api-create-favorite.php?id=$1 [QSA,NC,L]
+
+#-------------------------------------------------------------------------#
