@@ -1,6 +1,9 @@
 <?php
+    require './config/vendor/autoload.php';
 
-    $client - new MongoClient();
-    echo "Connection successful";
-
+    if($conn = new MongoDB\Client("mongodb://admin:admin@localhost:27017")){
+    	echo "Succesfull";
+	die;
+    }	
+    echo "Error...";
 ?>
