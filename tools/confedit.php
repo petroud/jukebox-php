@@ -11,6 +11,12 @@
         echo $error;
         die;
     }
-    $queryStruct = "UPDATE users SET confirmed = NOT confirmed WHERE id=$idToChangeConfState";
-    mysqli_query($con,$queryStruct);
+   
+    $rest_request = "http://localhost:80/api/user/status/".$idToChangeConfState;
+    $client = curl_init();
+    curl_setopt($client, CURLOPT_URL,$rest_request);
+    curl_setopt($client, CURLOPT_POST, true);
+    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($client);
+    curl_close($client);
 ?>

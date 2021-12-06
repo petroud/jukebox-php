@@ -28,7 +28,7 @@ function editConcert(id){
         var container = $("#editor-box");
         // if the target of the click isn't the container nor a descendant of the container
         if (!container.is(e.target) && container.has(e.target).length === 0){
-            x.style.display = "none"
+            closeEditor();
         }
     });
   
@@ -61,7 +61,7 @@ function newConcert(){
         var container = $("#adder-box");
         // if the target of the click isn't the container nor a descendant of the container
         if (!container.is(e.target) && container.has(e.target).length === 0){
-            x.style.display = "none"
+            cleanAdder();
         }
     });    
 }
@@ -76,20 +76,24 @@ function addConcert(){
     $.ajax({
         type:'post',
         url:'/tools/addconcert.php',
-        data:{
+        data:
+        JSON.stringify({
             title:title,
-            artist:artist,
+            artistname:artist,
             date: date,
             genre: genre
-        },
-
-        success:function(data) {
-            if(data){
-                newSuccess("Added successfully");
+        }),
+        dataType:"JSON",
+        success:function(res) {
+            if(res.response === "New concert added!"){
+                newSuccess("Added successfully!");
                 $('#addExitbtn').html('Close');
-                $('#concert-table tr:last').after('<tr id="row_'+data+'"><td>'+data+'</td> <td id="title_'+data+'">'+title+'</td> <td>'+date+'</td> <td>'+artist+'</td> <td>'+genre+'</td> <td> <a href="javascript:editConcert('+data+')"><img class = "conf-ico" src="/assets/editing.png" alt="edit concert"></a><a href="javascript:delConcert('+data+')"><img class = "conf-ico" src="/assets/bin.png" alt="delete concert"></a></td> </tr>');
-
-
+                $('#concert-table tr:last').after('<tr id="row_'+res.newID+'"><td>'+res.newID+'</td> <td id="title_'+res.newID+'">'+title+'</td> <td>'+date+'</td> <td>'+artist+'</td> <td>'+genre+'</td> <td> <a href="javascript:editConcert('+res.newID+')"><img class = "conf-ico" src="/assets/editing.png" alt="edit concert"></a><a href="javascript:delConcert('+res.newID+')"><img class = "conf-ico" src="/assets/bin.png" alt="delete concert"></a></td> </tr>');
+                $(this).delay(2000).queue(function() {
+                    $(this).hide();
+                    resetAdder();
+                    $(this).dequeue();
+                });        
             }else{
                 newError("Please fill in all fields");
             }
@@ -111,21 +115,23 @@ function submitEdits(){
     $.ajax({
         type:'post',
         url:'/tools/editconcert.php',
-        data:{
-            cid:id,
-            title:title,
-            artist:artist,
-            date: date,
-            genre: genre
-        },
-
-        success:function(data) {
-            if(data === "Successful Update"){
+        data:
+            JSON.stringify(
+            {
+                cid:id,
+                title:title,
+                artist:artist,
+                date: date,
+                genre: genre
+            }),
+        dataType: 'JSON',
+        success:function(res) {
+            if(res.response === "Successful Update"){
                 updateTableRow(id,title,date,artist,genre);
-                dispSuccess(data);
+                dispSuccess(res.response);
                 $('#exitbtn').html('Close')
             }else{
-                dispError(data);
+                dispError(res.response);
             }
                 
         }
@@ -173,8 +179,7 @@ function newSuccess(text){
 }
 
 function newError(text){
-    var x = document.getElementById("addResBox");
-    var y = document.getElementById("addResMsg")
+    var y = document.getElementById("addResMsg");
     x.style.display = "block";
     y.innerText = text;
     y.style.color = "#870900";    
@@ -184,6 +189,14 @@ function newError(text){
 function newNothing(){
     var x = document.getElementById("addResBox");
     x.style.display = "none";
+}
+
+function resetAdder(){
+    newNothing();
+    $('#new_title').val('');
+    $('#new_artist').val('');
+    $('#new_genre').val('');
+    $('#new_date').val('');
 }
 
 

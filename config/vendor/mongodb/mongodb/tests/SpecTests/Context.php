@@ -8,11 +8,15 @@ use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
+use PHPUnit\Framework\Assert;
 use stdClass;
+
 use function array_diff_key;
 use function array_keys;
+use function getenv;
 use function implode;
 use function mt_rand;
+use function uniqid;
 
 /**
  * Execution context for spec tests.
@@ -26,9 +30,9 @@ final class Context
     public $bucketName;
 
     /** @var Client|null */
-    public $client;
+    private $client;
 
-    /** @var string */
+    /** @var string|null */
     public $collectionName;
 
     /** @var string */
@@ -38,9 +42,9 @@ final class Context
     public $defaultWriteOptions = [];
 
     /** @var array */
-    public $outcomeFindOptions = [];
+    public $outcomeReadOptions = [];
 
-    /** @var string */
+    /** @var string|null */
     public $outcomeCollectionName;
 
     /** @var Session|null */
@@ -55,22 +59,81 @@ final class Context
     /** @var object */
     public $session1Lsid;
 
-    /**
-     * @param string $databaseName
-     * @param string $collectionName
-     */
-    private function __construct($databaseName, $collectionName)
+    /** @var Client|null */
+    private $encryptedClient;
+
+    /** @var bool */
+    private $useEncryptedClient = false;
+
+    private function __construct(string $databaseName, ?string $collectionName)
     {
         $this->databaseName = $databaseName;
         $this->collectionName = $collectionName;
         $this->outcomeCollectionName = $collectionName;
     }
 
+    public function disableEncryption(): void
+    {
+        $this->useEncryptedClient = false;
+    }
+
+    public function enableEncryption(): void
+    {
+        if (! $this->encryptedClient instanceof Client) {
+            throw new LogicException('Cannot enable encryption without autoEncryption options');
+        }
+
+        $this->useEncryptedClient = true;
+    }
+
     public static function fromChangeStreams(stdClass $test, $databaseName, $collectionName)
     {
         $o = new self($databaseName, $collectionName);
 
-        $o->client = new Client(FunctionalTestCase::getUri());
+        $o->client = FunctionalTestCase::createTestClient();
+
+        return $o;
+    }
+
+    public static function fromClientSideEncryption(stdClass $test, $databaseName, $collectionName)
+    {
+        $o = new self($databaseName, $collectionName);
+
+        $clientOptions = isset($test->clientOptions) ? (array) $test->clientOptions : [];
+
+        /* mongocryptd caches collection information, which causes test failures
+         * if we reuse the client. Thus, we add a random value to ensure we're
+         * creating a new client for each test. */
+        $driverOptions = ['random' => uniqid()];
+
+        $autoEncryptionOptions = [];
+
+        if (isset($clientOptions['autoEncryptOpts'])) {
+            $autoEncryptionOptions = (array) $clientOptions['autoEncryptOpts'] + ['keyVaultNamespace' => 'keyvault.datakeys'];
+            unset($clientOptions['autoEncryptOpts']);
+
+            if (isset($autoEncryptionOptions['kmsProviders']->aws)) {
+                $autoEncryptionOptions['kmsProviders']->aws = self::getAWSCredentials();
+            }
+
+            if (isset($autoEncryptionOptions['kmsProviders']->azure)) {
+                $autoEncryptionOptions['kmsProviders']->azure = self::getAzureCredentials();
+            }
+
+            if (isset($autoEncryptionOptions['kmsProviders']->gcp)) {
+                $autoEncryptionOptions['kmsProviders']->gcp = self::getGCPCredentials();
+            }
+        }
+
+        if (isset($test->outcome->collection->name)) {
+            $o->outcomeCollectionName = $test->outcome->collection->name;
+        }
+
+        $o->client = FunctionalTestCase::createTestClient(null, $clientOptions, $driverOptions);
+
+        if ($autoEncryptionOptions !== []) {
+            $o->encryptedClient = FunctionalTestCase::createTestClient(null, $clientOptions, $driverOptions + ['autoEncryption' => $autoEncryptionOptions]);
+        }
 
         return $o;
     }
@@ -79,7 +142,7 @@ final class Context
     {
         $o = new self($databaseName, $collectionName);
 
-        $o->client = new Client(FunctionalTestCase::getUri());
+        $o->client = FunctionalTestCase::createTestClient();
 
         return $o;
     }
@@ -98,12 +161,27 @@ final class Context
             'writeConcern' => new WriteConcern(WriteConcern::MAJORITY),
         ];
 
-        $o->outcomeFindOptions = [
+        $o->outcomeReadOptions = [
             'readConcern' => new ReadConcern('local'),
             'readPreference' => new ReadPreference('primary'),
         ];
 
-        $o->client = new Client(FunctionalTestCase::getUri(), $clientOptions);
+        $o->client = FunctionalTestCase::createTestClient(null, $clientOptions);
+
+        return $o;
+    }
+
+    public static function fromReadWriteConcern(stdClass $test, $databaseName, $collectionName)
+    {
+        $o = new self($databaseName, $collectionName);
+
+        if (isset($test->outcome->collection->name)) {
+            $o->outcomeCollectionName = $test->outcome->collection->name;
+        }
+
+        $clientOptions = isset($test->clientOptions) ? (array) $test->clientOptions : [];
+
+        $o->client = FunctionalTestCase::createTestClient(null, $clientOptions);
 
         return $o;
     }
@@ -116,7 +194,7 @@ final class Context
 
         $clientOptions = isset($test->clientOptions) ? (array) $test->clientOptions : [];
 
-        $o->client = new Client(FunctionalTestCase::getUri(), $clientOptions);
+        $o->client = FunctionalTestCase::createTestClient(null, $clientOptions);
 
         return $o;
     }
@@ -127,14 +205,11 @@ final class Context
 
         $clientOptions = isset($test->clientOptions) ? (array) $test->clientOptions : [];
 
-        // TODO: Remove this once retryWrites=true by default (see: PHPC-1324)
-        $clientOptions['retryWrites'] = true;
-
         if (isset($test->outcome->collection->name)) {
             $o->outcomeCollectionName = $test->outcome->collection->name;
         }
 
-        $o->client = new Client(FunctionalTestCase::getUri($useMultipleMongoses), $clientOptions);
+        $o->client = FunctionalTestCase::createTestClient(FunctionalTestCase::getUri($useMultipleMongoses), $clientOptions);
 
         return $o;
     }
@@ -147,7 +222,7 @@ final class Context
             'writeConcern' => new WriteConcern(WriteConcern::MAJORITY),
         ];
 
-        $o->outcomeFindOptions = [
+        $o->outcomeReadOptions = [
             'readConcern' => new ReadConcern('local'),
             'readPreference' => new ReadPreference('primary'),
         ];
@@ -159,7 +234,7 @@ final class Context
          * re-using a previously persisted libmongoc client object. */
         $clientOptions += ['p' => mt_rand()];
 
-        $o->client = new Client(FunctionalTestCase::getUri($useMultipleMongoses), $clientOptions);
+        $o->client = FunctionalTestCase::createTestClient(FunctionalTestCase::getUri($useMultipleMongoses), $clientOptions);
 
         $session0Options = isset($test->sessionOptions->session0) ? (array) $test->sessionOptions->session0 : [];
         $session1Options = isset($test->sessionOptions->session1) ? (array) $test->sessionOptions->session1 : [];
@@ -173,20 +248,55 @@ final class Context
         return $o;
     }
 
-    /**
-     * @return Client
-     */
-    public function getClient()
+    public static function getAWSCredentials(): array
     {
-        return $this->client;
+        if (! getenv('AWS_ACCESS_KEY_ID') || ! getenv('AWS_SECRET_ACCESS_KEY')) {
+            Assert::markTestSkipped('Please configure AWS credentials to use AWS KMS provider.');
+        }
+
+        return [
+            'accessKeyId' => getenv('AWS_ACCESS_KEY_ID'),
+            'secretAccessKey' => getenv('AWS_SECRET_ACCESS_KEY'),
+        ];
     }
 
-    public function getCollection(array $collectionOptions = [])
+    public static function getAzureCredentials(): array
+    {
+        if (! getenv('AZURE_TENANT_ID') || ! getenv('AZURE_CLIENT_ID') || ! getenv('AZURE_CLIENT_SECRET')) {
+            Assert::markTestSkipped('Please configure Azure credentials to use Azure KMS provider.');
+        }
+
+        return [
+            'tenantId' => getenv('AZURE_TENANT_ID'),
+            'clientId' => getenv('AZURE_CLIENT_ID'),
+            'clientSecret' => getenv('AZURE_CLIENT_SECRET'),
+        ];
+    }
+
+    public static function getGCPCredentials(): array
+    {
+        if (! getenv('GCP_EMAIL') || ! getenv('GCP_PRIVATE_KEY')) {
+            Assert::markTestSkipped('Please configure GCP credentials to use GCP KMS provider.');
+        }
+
+        return [
+            'email' => getenv('GCP_EMAIL'),
+            'privateKey' => getenv('GCP_PRIVATE_KEY'),
+        ];
+    }
+
+    public function getClient(): Client
+    {
+        return $this->useEncryptedClient && $this->encryptedClient ? $this->encryptedClient : $this->client;
+    }
+
+    public function getCollection(array $collectionOptions = [], array $databaseOptions = [])
     {
         return $this->selectCollection(
             $this->databaseName,
             $this->collectionName,
-            $this->prepareOptions($collectionOptions)
+            $collectionOptions,
+            $databaseOptions
         );
     }
 
@@ -208,7 +318,7 @@ final class Context
      * @return array
      * @throws LogicException if any option keys are unsupported
      */
-    public function prepareOptions(array $options)
+    public function prepareOptions(array $options): array
     {
         if (isset($options['readConcern']) && ! ($options['readConcern'] instanceof ReadConcern)) {
             $readConcern = (array) $options['readConcern'];
@@ -240,13 +350,17 @@ final class Context
                 throw new LogicException('Unsupported writeConcern args: ' . implode(',', array_keys($diff)));
             }
 
-            $w = $writeConcern['w'];
-            $wtimeout = isset($writeConcern['wtimeout']) ? $writeConcern['wtimeout'] : 0;
-            $j = isset($writeConcern['j']) ? $writeConcern['j'] : null;
+            if (! empty($writeConcern)) {
+                $w = $writeConcern['w'];
+                $wtimeout = $writeConcern['wtimeout'] ?? 0;
+                $j = $writeConcern['j'] ?? null;
 
-            $options['writeConcern'] = isset($j)
-                ? new WriteConcern($w, $wtimeout, $j)
-                : new WriteConcern($w, $wtimeout);
+                $options['writeConcern'] = isset($j)
+                    ? new WriteConcern($w, $wtimeout, $j)
+                    : new WriteConcern($w, $wtimeout);
+            } else {
+                unset($options['writeConcern']);
+            }
         }
 
         return $options;
@@ -260,7 +374,7 @@ final class Context
      * @param array $args Operation arguments
      * @throws LogicException if the session placeholder is unsupported
      */
-    public function replaceArgumentSessionPlaceholder(array &$args)
+    public function replaceArgumentSessionPlaceholder(array &$args): void
     {
         if (! isset($args['session'])) {
             return;
@@ -288,7 +402,7 @@ final class Context
      * @param stdClass $command Command document
      * @throws LogicException if the session placeholder is unsupported
      */
-    public function replaceCommandSessionPlaceholder(stdClass $command)
+    public function replaceCommandSessionPlaceholder(stdClass $command): void
     {
         if (! isset($command->lsid)) {
             return;
@@ -308,18 +422,16 @@ final class Context
         }
     }
 
-    public function selectCollection($databaseName, $collectionName, array $collectionOptions = [])
+    public function selectCollection($databaseName, $collectionName, array $collectionOptions = [], array $databaseOptions = [])
     {
-        return $this->client->selectCollection(
-            $databaseName,
-            $collectionName,
-            $this->prepareOptions($collectionOptions)
-        );
+        return $this
+            ->selectDatabase($databaseName, $databaseOptions)
+            ->selectCollection($collectionName, $this->prepareOptions($collectionOptions));
     }
 
     public function selectDatabase($databaseName, array $databaseOptions = [])
     {
-        return $this->client->selectDatabase(
+        return $this->getClient()->selectDatabase(
             $databaseName,
             $this->prepareOptions($databaseOptions)
         );

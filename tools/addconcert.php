@@ -7,13 +7,23 @@
     $title = $artist = $genre = $date= "";    
 
     $uid = $_SESSION['user_id'];
+
+    $jsonData = file_get_contents('php://input');
+    $data = json_decode($jsonData);
+    $dataArr = (array)$data;
+
+    $title = $dataArr['title'];
+    $artist = $dataArr['artistname'];
+    $genre = $dataArr['genre'];
+    $date = $dataArr['date'];
     
-    $input_title = trim($_POST["title"]);
-    $input_artist = trim($_POST["artist"]);
-    $input_genre = trim($_POST["genre"]);
-    $input_date = ($_POST["date"]);
+    $input_title = trim($title);
+    $input_artist = trim($artist);
+    $input_genre = trim($genre);
+    $input_date = ($date);
 
     if(empty($input_title) || empty($input_artist) || empty($input_genre) || empty($input_date)){
+        echo json_encode(["response"=>"Please fill in all fields!"]);
         die;
     } else{
         $q_title = $input_title;
@@ -22,16 +32,26 @@
         $q_date = $input_date;
     }
         
-    $sql = "INSERT INTO concerts(title,artistname,date,category,organizer) values('$q_title','$q_artist','$q_date','$q_genre','$uid')";
-    mysqli_query($con,$sql);
+
+    //Insertion REST call
+        $data = array(
+            'oid' => $uid,
+            'title' => $q_title,
+            'artistname' => $q_artist,
+            'genre' => $q_genre,
+            'date' => $q_date
+        );
     
-    $retrieveID = "SELECT id FROM concerts WHERE title='$q_title' AND artistname='$q_artist' AND date='$q_date' AND category='$q_genre' AND organizer=$uid ORDER BY id DESC LIMIT 1";
-
-    $gotback = mysqli_query($con,$retrieveID);
-    $rarray = mysqli_fetch_assoc($gotback);
-    $newcid = $rarray['id'];
-
-    echo $newcid;
-    die;
-
+        $reqData = json_encode($data);
+        
+        $rest_request = "http://localhost:80/api/concert/new";
+        $client = curl_init();
+        curl_setopt($client, CURLOPT_URL,$rest_request);
+        curl_setopt($client, CURLOPT_POST, true);
+        curl_setopt($client, CURLOPT_POSTFIELDS, $reqData);
+        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($client);
+        curl_close($client);
+        echo json_encode(["response"=>"New concert added!","newID"=>$response]);
+        die;
 ?>

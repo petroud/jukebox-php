@@ -6,12 +6,16 @@ session_start();
     $user_data = check_login($con);
     check_user();
 
-    function isFave($cid,$con){
-        $uid = $_SESSION['user_id'];
-        $checkQuery = "SELECT * FROM favorites WHERE user_id = $uid AND concert_id = $cid";
-        $result = mysqli_query($con, $checkQuery);
-        
-        if($result && mysqli_num_rows($result)===1){
+    function isFave($cid){
+
+        $rest_request = "http://localhost:80/api/checkfavorite/".$_SESSION['user_id']."/".$cid;
+        $client = curl_init($rest_request);
+        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($client);
+        curl_close($client);
+        $result = json_decode($response,true);
+
+        if(count($result)){
             return true;
         }else{
             return false;
@@ -28,6 +32,7 @@ session_start();
     <title>Jukebox | Concerts </title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/concerts.css">
+    <link rel="stylesheet" href="/src/scroll.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
@@ -149,26 +154,33 @@ session_start();
                     <ul class="concert-list">
                         <?php
 
-                        $query = "SELECT * FROM concerts";
-                        if($result = mysqli_query($con, $query)){
-                            if(mysqli_num_rows($result) > 0){
-                                while($row = mysqli_fetch_array($result)){
-                                    echo '<li class="concert-box" cid="'.$row['id'].'" title="' .$row['title']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['username'].'" date="'.$row['date'].'">';
-                                    echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
-                                    echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
-                                    echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
-                                    echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
-                                    $class = $func = "";
-                                    if(isFave($row['id'],$con)){
-                                        $class = "faved";
-                                        $func = "removeFave(".$row['id'].")";
-                                    }else{
-                                        $func = "addFave(".$row['id'].")";
-                                    }
-                                    echo '<div><button class="favorite-button unfaved '.$class.'" id="btnconcert'. $row['id'] .'" onclick="'.$func.'"><img src="" alt="fave" id="imgconcert'. $row['id'] .'"></button></div>';
-                                    echo '</li>';
+                        $rest_request = "http://localhost:80/api/concerts";
+                        $client = curl_init($rest_request);
+                        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+                        $response = curl_exec($client);
+                        curl_close($client);
+                        $result = json_decode($response,true);
+
+                        if(count($result) > 0 ){
+                            foreach($result as $row){
+                                echo '<li class="concert-box" cid="'.$row['_id'].'" title="' .$row['title']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['username'].'" date="'.$row['date'].'">';
+                                echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
+                                echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
+                                echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
+                                echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
+                                $class = $func = "";
+                                if(isFave($row['_id'])){
+                                    $class = "faved";
+                                    $func = "removeFave(".$row['_id'].")";
+                                }else{
+                                    $func = "addFave(".$row['_id'].")";
                                 }
+                                echo '<div><button class="favorite-button unfaved '.$class.'" id="btnconcert'. $row['_id'] .'" onclick="'.$func.'"><img src="" alt="fave" id="imgconcert'. $row['_id'] .'"></button></div>';
+                                echo '</li>';
                             }
+                            
+                        }else{
+                            echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
                         }
                         ?>
                     </ul>

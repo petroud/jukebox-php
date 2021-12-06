@@ -13,10 +13,11 @@ session_start();
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <title>Jukebox | Users Console</title>
+    <title>Jukebox | Organizer Console</title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/organizer.css">
     <link rel="stylesheet" href="/src/editor.css">
+    <link rel="stylesheet" href="/src/scroll.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
@@ -139,49 +140,48 @@ session_start();
                               
             <?php
                     // Include config file
-                    require_once "connection.php";
                     $uid = $_SESSION['user_id'];
-                    $sql = "SELECT * FROM concerts WHERE organizer = $uid";
+                    $rest_request = "http://localhost:80/api/organizer/".$uid;
+                    $client = curl_init($rest_request);
+                    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+                    $response = curl_exec($client);
+                    curl_close($client);
+                    $result = json_decode($response,true);
 
-                    if($result = mysqli_query($con, $sql)){
-                        if(mysqli_num_rows($result) > 0){
-                            echo '<table class="content-table" id="concert-table">';
-                                echo "<thead>";
-                                    echo "<tr>";
-                                        echo "<th>ID</th>";
-                                        echo "<th>Title</th>";
-                                        echo "<th>Date</th>";
-                                        echo "<th>Artists</th>";
-                                        echo "<th>Category</th>";
-                                        echo "<th>Action</th>";
+                    
+                    if(count($result) > 0){
+                        echo '<table class="content-table" id="concert-table">';
+                            echo "<thead>";
+                                echo "<tr>";
+                                    echo "<th>ID</th>";
+                                    echo "<th>Title</th>";
+                                    echo "<th>Date</th>";
+                                    echo "<th>Artists</th>";
+                                    echo "<th>Category</th>";
+                                    echo "<th>Action</th>";
 
-                                    echo "</tr>";
-                                echo "</thead>";
-                                echo "<tbody>";
-                                while($row = mysqli_fetch_array($result)){
-                                    echo '<tr id="row_'.$row['id'].'">';
-                                        echo "<td>" . $row['id'] . "</td>";
-                                        echo '<td id="title_'.$row['id'].'">'. $row['title'] . '</td>';
-                                        echo "<td>" . $row['date'] . "</td>";
-                                        echo "<td>" . $row['artistname'] . "</td>";
-                                        echo "<td>" . $row['category'] . "</td>";
-                                        echo "<td>";
-                                            echo '<a href="javascript:editConcert('.$row['id'].')"><img class = "conf-ico" src="/assets/editing.png" alt="edit concert"></a>';
-                                            echo '<a href="javascript:delConcert('.$row['id'].')"><img class = "conf-ico" src="/assets/bin.png" alt="delete concert"></a>';
-                                        echo "</td>";
-                                    echo "</tr>";
-                                }
-                                echo "</tbody>";                            
-                            echo "</table>";
-                            // Free result set
-                            mysqli_free_result($result);
-                        } else{
-                            echo '<div><em>No records were found.</em></div>';
-                        }
+                                echo "</tr>";
+                            echo "</thead>";
+                            echo "<tbody>";
+                            foreach($result as $row){
+                                echo '<tr id="row_'.$row['_id'].'">';
+                                    echo "<td>" . $row['_id'] . "</td>";
+                                    echo '<td id="title_'.$row['_id'].'">'. $row['title'] . '</td>';
+                                    echo "<td>" . $row['date'] . "</td>";
+                                    echo "<td>" . $row['artistname'] . "</td>";
+                                    echo "<td>" . $row['category'] . "</td>";
+                                    echo "<td>";
+                                        echo '<a href="javascript:editConcert('.$row['_id'].')"><img class = "conf-ico" src="/assets/editing.png" alt="edit concert"></a>';
+                                        echo '<a href="javascript:delConcert('.$row['_id'].')"><img class = "conf-ico" src="/assets/bin.png" alt="delete concert"></a>';
+                                    echo "</td>";
+                                echo "</tr>";
+                            }
+                            echo "</tbody>";                            
+                        echo "</table>";
                     } else{
-                        echo "Something went wrong. Please try again later.";
+                        echo '<div><em>No records were found.</em></div>';
                     }
-                    ?>
+                ?>
                 </div>
             <div class="divider">
 

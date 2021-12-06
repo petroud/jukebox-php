@@ -3,6 +3,8 @@
 namespace MongoDB\Tests;
 
 use MongoDB\Client;
+use MongoDB\Driver\ClientEncryption;
+use MongoDB\Driver\Exception\InvalidArgumentException as DriverInvalidArgumentException;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
@@ -13,7 +15,7 @@ use MongoDB\Exception\InvalidArgumentException;
  */
 class ClientTest extends TestCase
 {
-    public function testConstructorDefaultUri()
+    public function testConstructorDefaultUri(): void
     {
         $client = new Client();
 
@@ -21,11 +23,25 @@ class ClientTest extends TestCase
     }
 
     /**
+     * @doesNotPerformAssertions
+     */
+    public function testConstructorAutoEncryptionOpts(): void
+    {
+        $autoEncryptionOpts = [
+            'keyVaultClient' => new Client(static::getUri()),
+            'keyVaultNamespace' => 'default.keys',
+            'kmsProviders' => ['aws' => ['accessKeyId' => 'abc', 'secretAccessKey' => 'def']],
+        ];
+
+        new Client(static::getUri(), [], ['autoEncryption' => $autoEncryptionOpts]);
+    }
+
+    /**
      * @dataProvider provideInvalidConstructorDriverOptions
      */
-    public function testConstructorDriverOptionTypeChecks(array $driverOptions)
+    public function testConstructorDriverOptionTypeChecks(array $driverOptions, string $exception = InvalidArgumentException::class): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException($exception);
         new Client(static::getUri(), [], $driverOptions);
     }
 
@@ -37,17 +53,34 @@ class ClientTest extends TestCase
             $options[][] = ['typeMap' => $value];
         }
 
+        $options[][] = ['autoEncryption' => ['keyVaultClient' => 'foo']];
+
+        foreach ($this->getInvalidStringValues() as $value) {
+            $options[][] = ['driver' => ['name' => $value]];
+        }
+
+        foreach ($this->getInvalidStringValues() as $value) {
+            $options[][] = ['driver' => ['version' => $value]];
+        }
+
+        foreach ($this->getInvalidStringValues() as $value) {
+            $options[] = [
+                'driverOptions' => ['driver' => ['platform' => $value]],
+                'exception' => DriverInvalidArgumentException::class,
+            ];
+        }
+
         return $options;
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $client = new Client(static::getUri());
 
         $this->assertSame(static::getUri(), (string) $client);
     }
 
-    public function testSelectCollectionInheritsOptions()
+    public function testSelectCollectionInheritsOptions(): void
     {
         $uriOptions = [
             'readConcernLevel' => ReadConcern::LOCAL,
@@ -73,7 +106,7 @@ class ClientTest extends TestCase
         $this->assertSame(WriteConcern::MAJORITY, $debug['writeConcern']->getW());
     }
 
-    public function testSelectCollectionPassesOptions()
+    public function testSelectCollectionPassesOptions(): void
     {
         $collectionOptions = [
             'readConcern' => new ReadConcern(ReadConcern::LOCAL),
@@ -96,7 +129,7 @@ class ClientTest extends TestCase
         $this->assertSame(WriteConcern::MAJORITY, $debug['writeConcern']->getW());
     }
 
-    public function testGetSelectsDatabaseAndInheritsOptions()
+    public function testGetSelectsDatabaseAndInheritsOptions(): void
     {
         $uriOptions = ['w' => WriteConcern::MAJORITY];
 
@@ -109,7 +142,7 @@ class ClientTest extends TestCase
         $this->assertSame(WriteConcern::MAJORITY, $debug['writeConcern']->getW());
     }
 
-    public function testSelectDatabaseInheritsOptions()
+    public function testSelectDatabaseInheritsOptions(): void
     {
         $uriOptions = [
             'readConcernLevel' => ReadConcern::LOCAL,
@@ -135,7 +168,7 @@ class ClientTest extends TestCase
         $this->assertSame(WriteConcern::MAJORITY, $debug['writeConcern']->getW());
     }
 
-    public function testSelectDatabasePassesOptions()
+    public function testSelectDatabasePassesOptions(): void
     {
         $databaseOptions = [
             'readConcern' => new ReadConcern(ReadConcern::LOCAL),
@@ -156,5 +189,56 @@ class ClientTest extends TestCase
         $this->assertSame(['root' => 'array'], $debug['typeMap']);
         $this->assertInstanceOf(WriteConcern::class, $debug['writeConcern']);
         $this->assertSame(WriteConcern::MAJORITY, $debug['writeConcern']->getW());
+    }
+
+    public function testCreateClientEncryption(): void
+    {
+        $client = new Client(static::getUri());
+
+        $options = [
+            'keyVaultNamespace' => 'default.keys',
+            'kmsProviders' => ['aws' => ['accessKeyId' => 'abc', 'secretAccessKey' => 'def']],
+        ];
+
+        $clientEncryption = $client->createClientEncryption($options);
+        $this->assertInstanceOf(ClientEncryption::class, $clientEncryption);
+    }
+
+    public function testCreateClientEncryptionWithKeyVaultClient(): void
+    {
+        $client = new Client(static::getUri());
+
+        $options = [
+            'keyVaultClient' => $client,
+            'keyVaultNamespace' => 'default.keys',
+            'kmsProviders' => ['aws' => ['accessKeyId' => 'abc', 'secretAccessKey' => 'def']],
+        ];
+
+        $clientEncryption = $client->createClientEncryption($options);
+        $this->assertInstanceOf(ClientEncryption::class, $clientEncryption);
+    }
+
+    public function testCreateClientEncryptionWithManager(): void
+    {
+        $client = new Client(static::getUri());
+
+        $options = [
+            'keyVaultClient' => $client->getManager(),
+            'keyVaultNamespace' => 'default.keys',
+            'kmsProviders' => ['aws' => ['accessKeyId' => 'abc', 'secretAccessKey' => 'def']],
+        ];
+
+        $clientEncryption = $client->createClientEncryption($options);
+        $this->assertInstanceOf(ClientEncryption::class, $clientEncryption);
+    }
+
+    public function testCreateClientEncryptionWithInvalidKeyVaultClient(): void
+    {
+        $client = new Client(static::getUri());
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected "keyVaultClient" option to have type "MongoDB\Client" or "MongoDB\Driver\Manager" but found "string"');
+
+        $client->createClientEncryption(['keyVaultClient' => 'foo']);
     }
 }

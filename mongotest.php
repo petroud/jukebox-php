@@ -1,9 +1,12 @@
 <?php
-    require './config/vendor/autoload.php';
 
-    if($conn = new MongoDB\Client("mongodb://admin:admin@localhost:27017")){
-    	echo "Succesfull";
-	die;
-    }	
-    echo "Error...";
+    $jsonData = file_get_contents('php://input');
+    $data = json_decode($jsonData);
+    $uid = $data['uid'];
+    $fname = $data['fname'];
+    $lname = $data['lname'];
+    $email = $data['email'];
+    $role = $data['role'];
+    echo $email;
+
 ?>

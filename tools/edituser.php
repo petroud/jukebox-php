@@ -6,20 +6,31 @@
     check_admin();
     $fname = $lname = $email = $role= "";
 
+    $jsonData = file_get_contents('php://input');
+    $data = json_decode($jsonData,true);
 
-    if(isset($_POST['uid']) && !empty($_POST['uid'])){
+    $dataArr = $data;
+
+    $uid = $dataArr['uid'];
+    $fname = $dataArr['fname'];
+    $lname = $dataArr['lname'];
+    $email = $dataArr['email'];
+    $role = $dataArr['role'];
+
+
+    if(isset($uid) && !empty($uid)){
         // Get hidden input value
-        $id = $_POST['uid'];
+        $id = $uid;
         
         // Validate name
-        $input_fname = trim($_POST["fname"]);
-        $input_lname = trim($_POST["lname"]);
+        $input_fname = trim($fname);
+        $input_lname = trim($lname);
     
         if(empty($input_fname) || empty($input_lname)){
-            echo "Please fill in all fields";
+            echo json_encode(["response"=>"Please fill in all fields"]);
             die;
         } elseif(!filter_var($input_fname, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/"))) || !filter_var($input_lname, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-            echo "Please provide a valid name";
+            echo json_encode(["response"=>"Please provide a valid name"]);
             die;
         } else{
             $q_fname = $input_fname;
@@ -27,34 +38,50 @@
         }
         
         // Validate email address
-        $input_address = trim($_POST["email"]);
+        $input_address = trim($email);
         if(empty($input_address)){
-            echo "Please fill in all fields";
+            echo json_encode(["response"=>"Please fill in all fields"]);
             die;
         } elseif(filter_var($input_address, FILTER_VALIDATE_EMAIL)){
             $q_email = $input_address;
         } else{
-            echo "Please provide a valid email address";
+            echo json_encode(["response"=>"Please provide a valid email address"]);
             die;
         }
     
         // Validate role
-        $input_role = $_POST["role"];
+        $input_role = $role;
         if(empty($input_role)){
             echo "Please fill in all fields";
             die;
         } elseif($input_role==="ADMIN" or $input_role==="ORGANIZER" or $input_role === "USER"){
             $q_role = $input_role;
         } else{
-            echo "Please provide a valid role";
+            echo json_encode(["response"=>"Please provide a valid role"]);
             die;
         }
         
     
         // Prepare an update statement
-        $sql = "UPDATE users SET name='$q_fname', surname='$q_lname', email='$q_email', role='$q_role' WHERE id='$id'";
-        mysqli_query($con,$sql);
-        echo "Successful Update";
+        $data = array(
+            'fname' => $q_fname,
+            'lname' => $q_lname,
+            'email' => $q_email,
+            'role' => $q_role
+        );
+    
+        $reqData = json_encode($data);
+        
+        $rest_request = "http://localhost:80/api/user/update/".$uid;
+        $client = curl_init();
+        curl_setopt($client, CURLOPT_URL,$rest_request);
+        curl_setopt($client, CURLOPT_POST, true);
+        curl_setopt($client, CURLOPT_POSTFIELDS, $reqData);
+        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($client);
+        curl_close($client);
+
+        echo json_encode(["response"=>"Successful Update"]);
         die;
     
     }

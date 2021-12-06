@@ -129,55 +129,54 @@ session_start();
                 <div><h1><span>Users of Jukebox |  Administrator Console</span></h1></div>
 
                     <?php
-                    // Include config file
-                    require_once "connection.php";
-                    
-                    $sql = "SELECT * FROM users";
-                    if($result = mysqli_query($con, $sql)){
-                        if(mysqli_num_rows($result) > 0){
-                            echo '<table class="content-table table-sortable">';
-                                echo "<thead>";
-                                    echo "<tr>";
-                                        echo "<th>ID</th>";
-                                        echo "<th>First Name</th>";
-                                        echo "<th>Last Name</th>";
-                                        echo "<th>Username</th>";
-                                        echo "<th>Email</th>";
-                                        echo "<th>Role</th>";
-                                        echo "<th>Confirmed</th>";
-                                        echo "<th>Action</th>";
-                                    echo "</tr>";
-                                echo "</thead>";
-                                echo "<tbody>";
-                                while($row = mysqli_fetch_array($result)){
-                                    echo "<tr id=row_".$row['id'].">";
-                                        echo "<td>" . $row['id'] . "</td>";
-                                        echo "<td>" . $row['name'] . "</td>";
-                                        echo "<td>" . $row['surname'] . "</td>";
-                                        echo "<td id=uname_".$row['id'].">". $row['username'] . "</td>";
-                                        echo "<td>" . $row['email'] . "</td>";
-                                        echo "<td>" . $row['role'] . "</td>";
-                                        if($row['confirmed'] == 1){
-                                            echo "<td id=status_".$row['id']." style=\"color:green;\">" . 'Confirmed' . "</td>";
-                                        }else{
-                                            echo "<td id=status_".$row['id']." style=\"color:red;\">"  . 'Deactivated' . "</td>";
-                                        }
-                                        echo "<td>";
-                                            echo '<a href="javascript:statusUser('.$row['id'].');"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
-                                            echo '<a href="javascript:editUser('. $row['id'] .');"><img class = "conf-ico" src="/assets/editing.png" alt="change confirmed"></a>';
-                                            echo '<a href="javascript:delUser('.$row['id'].');"><img class = "conf-ico" src="/assets/bin.png" alt="change confirmed"></a>';
-                                        echo "</td>";
-                                    echo "</tr>";
+                   
+                    $rest_request = "http://localhost:80/api/users";
+                    $client = curl_init($rest_request);
+                    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+                    $response = curl_exec($client);
+                    curl_close($client);
+                    $result = json_decode($response,true);
+
+
+                    if(count($result)>0){
+                        echo '<table class="content-table table-sortable">';
+                            echo "<thead>";
+                                echo "<tr>";
+                                    echo "<th>ID</th>";
+                                    echo "<th>First Name</th>";
+                                    echo "<th>Last Name</th>";
+                                    echo "<th>Username</th>";
+                                    echo "<th>Email</th>";
+                                    echo "<th>Role</th>";
+                                    echo "<th>Confirmed</th>";
+                                    echo "<th>Action</th>";
+                                echo "</tr>";
+                            echo "</thead>";
+                            echo "<tbody>";
+                            foreach($result as $row){
+                                echo "<tr id=row_".$row['_id'].">";
+                                echo "<td>" . $row['_id'] . "</td>";
+                                echo "<td>" . $row['name'] . "</td>";
+                                echo "<td>" . $row['surname'] . "</td>";
+                                echo "<td id=uname_".$row['_id'].">". $row['username'] . "</td>";
+                                echo "<td>" . $row['email'] . "</td>";
+                                echo "<td>" . $row['role'] . "</td>";
+                                if($row['confirmed'] == 1){
+                                    echo "<td id=status_".$row['_id']." style=\"color:green;\">" . 'Confirmed' . "</td>";
+                                }else{
+                                    echo "<td id=status_".$row['_id']." style=\"color:red;\">"  . 'Deactivated' . "</td>";
                                 }
-                                echo "</tbody>";                            
-                            echo "</table>";
-                            // Free result set
-                            mysqli_free_result($result);
-                        } else{
-                            echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
-                        }
-                    } else{
-                        echo "Something went wrong. Please try again later.";
+                                echo "<td>";
+                                    echo '<a href="javascript:statusUser('.$row['_id'].');"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
+                                    echo '<a href="javascript:editUser('. $row['_id'] .');"><img class = "conf-ico" src="/assets/editing.png" alt="change confirmed"></a>';
+                                    echo '<a href="javascript:delUser('.$row['_id'].');"><img class = "conf-ico" src="/assets/bin.png" alt="change confirmed"></a>';
+                                echo "</td>";
+                                echo "</tr>";
+                            }
+                            echo "</tbody>";                            
+                        echo "</table>";
+                    }else{
+                        echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
                     }
                     ?>
                 </div>

@@ -51,12 +51,15 @@ operation: ~
 optional: true
 ---
 arg_name: option
-name: hint
-type: string|array|object
+name: let
+type: array|object
 description: |
-  The index to use. Specify either the index name as a string or the index key
-  pattern as a document. If specified, then the query system will only consider
-  plans using the hinted index.
+  Map of parameter names and values. Values must be constant or closed
+  expressions that do not reference document fields. Parameters can then be
+  accessed as variables in an aggregate expression context (e.g. ``$$var``).
+
+  This is not supported for server versions prior to 5.0 and will result in an
+  exception at execution time if used.
 interface: phpmethod
 operation: ~
 optional: true

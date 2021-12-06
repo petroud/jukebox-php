@@ -5,26 +5,6 @@ session_start();
     include("functions.php");
     $user_data = check_login($con);
     check_user();
-
-    function isFave($cid,$con){
-        $uid = $_SESSION['user_id'];
-        $checkQuery = "SELECT * FROM favorites WHERE user_id = $uid AND concert_id = $cid";
-        $result = mysqli_query($con, $checkQuery);
-        
-        if($result && mysqli_num_rows($result)===1){
-            return true;
-        }else{
-            return false;
-        }
-    }     
-
-    function decide_Color($id,$con){
-        if(isFave($id,$con)){
-            return 'style="background-color: #d62b2b;"';
-        }else{
-            // return nothing
-        }
-    }
 ?>
 
 
@@ -36,6 +16,7 @@ session_start();
     <title>Jukebox | Favorites </title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/concerts.css">
+    <link rel="stylesheet" href="/src/scroll.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
@@ -128,21 +109,26 @@ session_start();
                 <div class="concert-container">
                     <ul class="concert-list">
                         <?php
+
+                        $rest_request = "http://localhost:80/api/favorites/".$_SESSION['user_id'];
+                        $client = curl_init($rest_request);
+                        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+                        $response = curl_exec($client);
+                        curl_close($client);
+                        $result = json_decode($response,true);
                         $uid = $_SESSION['user_id'];
-                        $query = "SELECT * FROM (SELECT * FROM favorites WHERE user_id = '$uid') as faves LEFT JOIN concerts ON faves.concert_id =concerts.id";
-                        if($result = mysqli_query($con, $query)){
-                            if(mysqli_num_rows($result) > 0){
-                                while($row = mysqli_fetch_array($result)){
-                                    echo '<li class="concert-box" id="fave'.$row['id'].'">';
-                                    echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
-                                    echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
-                                    echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
-                                    echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
-                                    echo '<div><button class="favorite-button" onclick="delFave('. $row['id'] .')"><img src="/assets/remove.png" alt="rfave"></button></div>';
-                                    echo '</li>';
-                                }
-                            }           
-                        }
+                        if(count($result) > 0){
+                            foreach($result as $row){
+                                echo '<li class="concert-box" id="fave'.$row['_id'].'">';
+                                echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
+                                echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
+                                echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
+                                echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
+                                echo '<div><button class="favorite-button" onclick="delFave('. $row['_id'] .')"><img src="/assets/remove.png" alt="rfave"></button></div>';
+                                echo '</li>';
+                            }
+                        }           
+                        
                         ?>
                     </ul>
                 </div>

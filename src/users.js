@@ -6,7 +6,7 @@ function delUser(id){
             type:'post',
             url:'/tools/userdel.php',
             data:{
-                uid:id 
+                uid:id
             },
             success:function(data){
                 $('#row_'+id).hide('slow');
@@ -79,21 +79,28 @@ function submitEdits(){
     $.ajax({
         type:'post',
         url:'/tools/edituser.php',
-        data:{
+        data:
+        JSON.stringify(
+            {
             uid:id,
             fname:fname,
             lname:lname,
             email:mail,
             role:role
-        },
-
-        success:function(data) {
-            if(data === "Successful Update"){
+        }),
+        dataType: 'JSON',
+        success:function(res) {
+            if(res.response === "Successful Update"){
                 updateTableRow(id,fname,lname,mail,role);
-                dispSuccess(data);
-                $('#exitbtn').html('Close')
+                $('#exitbtn').html('Close');
+                dispSuccess(res.response);
+                $(this).delay(2000).queue(function() {
+                    $(this).hide();
+                    dispNothing();
+                    $(this).dequeue();
+                });   
             }else{
-                dispError(data);
+                dispError(res.response);
             }
                 
         }

@@ -5,15 +5,11 @@
     $user_data = check_login($con);
     check_organizer();
 
-    $idToDelete = $_POST['cid'];
-    $uid = $_SESSION['user_id'];
-
-    $authQuery = "SELECT * FROM concerts WHERE id=$idToDelete AND organizer=$uid";
-    $authResult = mysqli_query($con,$authQuery);
-    if($authResult){
-        $queryStruct = "DELETE FROM concerts WHERE id=$idToDelete";
-        mysqli_query($con,$queryStruct);
-    }else{
-        die;
-    }
+    $rest_request = "http://localhost:80/api/concert/delete/".$_SESSION['user_id']."/".$_POST['cid'];
+    $client = curl_init();
+    curl_setopt($client, CURLOPT_URL,$rest_request);
+    curl_setopt($client, CURLOPT_POST, true);
+    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($client);
+    curl_close($client);
 ?>
