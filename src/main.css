@@ -72,6 +72,21 @@ h1{
   font-size: 25px;
 }
 
+.centered{
+  text-align: center;
+  margin-top: 250px;
+}
+
+.centered-loader{
+  height: 200px;
+  text-align: center;
+}
+
+.centered-gear{
+  height: 200px;
+  text-align: center;
+}
+
 .alert{
   font-family: sans-serif;
   font-weight: 600;
