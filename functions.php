@@ -3,16 +3,7 @@
 function check_login($con){
 
     if(isset($_SESSION['user_id'])){
-        $id = $_SESSION['user_id'];
-        $query = "select * from users where user_id= '$id' limit 1";
-        
-        $result = mysqli_query($con,$query);
-
-        if($result && mysqli_num_rows($result) > 0){
-            $user_data = mysqli_fetch_assoc($result);
-            return $user_data;
-        }
-
+      //do nothing
     }else{
         //redirect to login
         header("Location: /index.php");
@@ -23,17 +14,6 @@ function check_login($con){
 function already_login($con){
 
     if(isset($_SESSION['user_id'])){
-        $id = $_SESSION['user_id'];
-        $query = "select * from users where user_id= '$id' limit 1";
-        
-        $result = mysqli_query($con,$query);
-
-        if($result && mysqli_num_rows($result) > 0){
-            $user_data = mysqli_fetch_assoc($result);
-            return $user_data;
-        }
-        //if already logged-in dont login or sign up again go straight to welcome page
-        //this is useful in case user presses back from welcome page and tries to login again
         header("Location: welcome.php");
     }else{
         //do nothing, stay at login
