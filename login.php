@@ -1,45 +1,55 @@
 <?php
     session_start();
-
-    include("connection.php");
-    include("functions.php");
-    $user_data = already_login($con);
+    include("parser.php");
     $activ_error = $auth_error = $data_form_error = false;
-   
+    ini_set('display_errors',0);
+
+    //Authenticate 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
     
         $username = $_POST['uname'];
         $password = $_POST['pass'];
 
         if(!empty($username) && !empty($password)){
-            $query = "select * from users where username = '$username' limit 1";
-            $result = mysqli_query($con, $query);
-            if($result){
-                if($result && mysqli_num_rows($result) === 1){
-                    $user_data = mysqli_fetch_assoc($result);
-                    if($user_data['password'] === $password){
-                        if($user_data['confirmed']){
-                            $_SESSION['uname'] = $user_data['username'];
-                            $_SESSION['user_id'] = $user_data['id'];
-                            $_SESSION['first_name'] = $user_data['name'];
-                            $_SESSION['last_name'] = $user_data['surname'];
-                            $_SESSION['user_role'] = $user_data['role'];
+            //Acquire X-Subject Token from keyrock for this session using credentials given by client and acquire info if user exists and is authenticated
+            $user_creds = '{
+                "name":"'.$username.'",
+                "password":"'.$password.'"}';
 
-                            header("Location: welcome.php");
-                        }else{
-                            $activ_error = true;
-                        }
-                    }else{
-                        $auth_error = true;
-                    }
-                }else{
-                    $auth_error = true;
-                }
+            $cc = curl_init();
+            curl_setopt($cc, CURLOPT_URL, "http://192.168.1.11:3005/v1/auth/tokens");
+            curl_setopt($cc, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($cc, CURLOPT_HEADER, 1);
+            curl_setopt($cc, CURLOPT_POST, TRUE);
+            curl_setopt($cc, CURLOPT_POSTFIELDS, $user_creds);
+            curl_setopt($cc, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+            
+            $response = curl_exec($cc);
+            $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
+            $header = substr($response, 0, $header_size);
+            $hdrArray = http_parse_headers($header);
+            curl_close($cc);
+            $xToken="";
+            ini_set('display_errors',0);
+            try{
+                $xToken = $hdrArray['X-Subject-Token'];
+            }catch(Exception $ex){
+                $xToken="";
+            }
+
+            if(empty($xToken)){
+                $auth_error=true;
             }else{
-                $auth_error = true;
+                $_SESSION['uname'] = "dpetrou";
+                $_SESSION['user_id'] = "1";
+                $_SESSION['first_name'] = "name";
+                $_SESSION['last_name'] = "petrou";
+                $_SESSION['user_role'] = "ADMIN";
+
+                header("Location: welcome.php");
             }
         }else{
-            $data_form_error = true;   
+            $data_form_error = true;
         }
     }
 ?>
