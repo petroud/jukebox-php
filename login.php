@@ -1,8 +1,9 @@
 <?php
     session_start();
     include("parser.php");
+    include("databases.php");
+    include("connection.php");
     $activ_error = $auth_error = $data_form_error = false;
-    ini_set('display_errors',0);
 
     //Authenticate 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -17,6 +18,8 @@
                 "password":"'.$password.'"}';
 
             $cc = curl_init();
+
+            //Build request to be sent to IDM-Keyrock service
             curl_setopt($cc, CURLOPT_URL, "http://192.168.1.11:3005/v1/auth/tokens");
             curl_setopt($cc, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($cc, CURLOPT_HEADER, 1);
@@ -24,11 +27,13 @@
             curl_setopt($cc, CURLOPT_POSTFIELDS, $user_creds);
             curl_setopt($cc, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
             
+            //Execute request and check if authentication is successfull by checking if a new token is generated
             $response = curl_exec($cc);
             $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
             $header = substr($response, 0, $header_size);
             $hdrArray = http_parse_headers($header);
             curl_close($cc);
+
             $xToken="";
             ini_set('display_errors',0);
             try{
@@ -38,13 +43,40 @@
             }
 
             if(empty($xToken)){
+                //Error in authentication
                 $auth_error=true;
             }else{
-                $_SESSION['uname'] = "dpetrou";
-                $_SESSION['user_id'] = "1";
-                $_SESSION['first_name'] = "name";
-                $_SESSION['last_name'] = "petrou";
-                $_SESSION['user_role'] = "ADMIN";
+                //Token was generated, authentication successfull, request user data and assign the session variables. Bring up the welcome page
+
+                //Get user keyrock ID and app ID + confirmed status from the ID correllation Database
+                $userAppInfo = getUserInfoByEmail($username,$con);          
+                
+
+                //Build request to be sent to IDM-Keyrock service for reading the user info
+                $curlClient = curl_init();
+                curl_setopt($curlClient, CURLOPT_URL, "http://192.168.1.11:3005/v1/users/".$userAppInfo['keyrock_id']);
+                curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($curlClient, CURLOPT_HTTPHEADER, array("X-Auth-Token: ".$xToken));
+                $answerIDM = curl_exec($curlClient);
+                curl_close($curlClient);
+
+                $userInfo = json_decode($answerIDM,true);
+
+                //Assign required session variables for a achieving functionality later
+                $_SESSION['token'] = $xToken;
+                $_SESSION['uname'] = $userInfo['user']['username'];
+                $_SESSION['email'] = $userInfo['user']['email'];
+                $_SESSION['keyrock_id'] = $userInfo['user']['id'];
+               
+                $_SESSION['user_id'] = $userAppInfo['id'];
+                $_SESSION['confirmed'] = $userAppInfo['confirmed'];
+
+                $fullname = $userInfo['user']['description'];
+                $sliced = explode(" ",$fullname);
+                $_SESSION['first_name'] = $sliced[0];
+                $_SESSION['last_name'] = $sliced[1];
+
+                $_SESSION['user_role'] = "USER";
 
                 header("Location: welcome.php");
             }
@@ -80,8 +112,6 @@
         </style>
 </head>
 
-
-
 <body>
     <div class="banner">
             <div class="navbar">
@@ -99,7 +129,7 @@
                 <div>
                     <form method = "POST">
                         <h1 class="waving-text">Please enter your credentials</h1>
-                        <input name = "uname" type="text" class = "input-box" placeholder= "Username">
+                        <input name = "uname" type="text" class = "input-box" placeholder= "E-Mail">
                         <input name = "pass" type="password" class = "input-box" placeholder= "Password"><br><br>
                         <input type="submit" class = "waving button" value="LOGIN"><br><br>
                         <?php
@@ -114,11 +144,7 @@
                             }
                         ?>
                         <a href="signup.php" class = "sign-up-ref"> Don't have an account? Sign up </a>
-                    </form>
-
-
-
-                                     
+                    </form>                   
                    
                 </div>
                 <div>

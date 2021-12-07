@@ -1,3 +1,12 @@
+<?php
+
+$instanceReady = false;
+
+
+    
+?>
+
+
 <!DOCTYPE html>
 
 <head>
