@@ -1,8 +1,8 @@
 <?php
 
-$dbhost = "localhost";
+$dbhost = "192.168.1.11";
 $dbuser = "root";
-$dbpass = "";
+$dbpass = "root";
 $dbname = "jukebox";
 
 if(!$con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname)){
