@@ -50,35 +50,38 @@
 
                 //Get user keyrock ID and app ID + confirmed status from the ID correllation Database
                 $userAppInfo = getUserInfoByEmail($username,$con);          
+                if($userAppInfo['confirmed']==0){
+                   $activ_error = true;
+                }else{
+
+                    //Build request to be sent to IDM-Keyrock service for reading the user info
+                    $curlClient = curl_init();
+                    curl_setopt($curlClient, CURLOPT_URL, "http://192.168.1.11:3005/v1/users/".$userAppInfo['keyrock_id']);
+                    curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, TRUE);
+                    curl_setopt($curlClient, CURLOPT_HTTPHEADER, array("X-Auth-Token: ".$xToken));
+                    $answerIDM = curl_exec($curlClient);
+                    curl_close($curlClient);
+
+                    $userInfo = json_decode($answerIDM,true);
+
+                    //Assign required session variables for a achieving functionality later
+                    $_SESSION['token'] = $xToken;
+                    $_SESSION['uname'] = $userInfo['user']['username'];
+                    $_SESSION['email'] = $userInfo['user']['email'];
+                    $_SESSION['keyrock_id'] = $userInfo['user']['id'];
                 
+                    $_SESSION['user_id'] = $userAppInfo['id'];
+                    $_SESSION['confirmed'] = $userAppInfo['confirmed'];
 
-                //Build request to be sent to IDM-Keyrock service for reading the user info
-                $curlClient = curl_init();
-                curl_setopt($curlClient, CURLOPT_URL, "http://192.168.1.11:3005/v1/users/".$userAppInfo['keyrock_id']);
-                curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, TRUE);
-                curl_setopt($curlClient, CURLOPT_HTTPHEADER, array("X-Auth-Token: ".$xToken));
-                $answerIDM = curl_exec($curlClient);
-                curl_close($curlClient);
+                    $fullname = $userInfo['user']['description'];
+                    $sliced = explode(" ",$fullname);
+                    $_SESSION['first_name'] = $sliced[0];
+                    $_SESSION['last_name'] = $sliced[1];
 
-                $userInfo = json_decode($answerIDM,true);
+                    $_SESSION['user_role'] = $userInfo['user']['website'];
 
-                //Assign required session variables for a achieving functionality later
-                $_SESSION['token'] = $xToken;
-                $_SESSION['uname'] = $userInfo['user']['username'];
-                $_SESSION['email'] = $userInfo['user']['email'];
-                $_SESSION['keyrock_id'] = $userInfo['user']['id'];
-               
-                $_SESSION['user_id'] = $userAppInfo['id'];
-                $_SESSION['confirmed'] = $userAppInfo['confirmed'];
-
-                $fullname = $userInfo['user']['description'];
-                $sliced = explode(" ",$fullname);
-                $_SESSION['first_name'] = $sliced[0];
-                $_SESSION['last_name'] = $sliced[1];
-
-                $_SESSION['user_role'] = "USER";
-
-                header("Location: welcome.php");
+                    header("Location: welcome.php");
+                }
             }
         }else{
             $data_form_error = true;
