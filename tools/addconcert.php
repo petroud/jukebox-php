@@ -2,7 +2,7 @@
     session_start();
     include("../functions.php");
     include("../connection.php");
-    check_login($con);
+    check_login();
     check_organizer();
     $title = $artist = $genre = $date= "";    
 

@@ -2,7 +2,7 @@
     session_start();
     include("../connection.php");
     include("../functions.php");
-    $user_data = check_login($con);
+    check_login();
     check_user();
     
     $rest_request = "http://localhost:80/api/favorite/delete/".$_SESSION['user_id']."/".$_POST['fid'];

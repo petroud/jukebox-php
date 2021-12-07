@@ -1,8 +1,7 @@
 <?php
 include("connection.php");
 
-function check_login($con){
-
+function check_login(){
     if(isset($_SESSION['user_id'])){
       //do nothing
     }else{
@@ -12,7 +11,7 @@ function check_login($con){
     }
 }
 
-function already_login($con){
+function already_login(){
 
     if(isset($_SESSION['user_id'])){
         header("Location: welcome.php");
