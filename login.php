@@ -4,6 +4,7 @@
     include("databases.php");
     include("connection.php");
     $activ_error = $auth_error = $data_form_error = false;
+    ini_set('display_errors',0);
 
     //Authenticate 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -35,7 +36,6 @@
             curl_close($cc);
 
             $xToken="";
-            ini_set('display_errors',0);
             try{
                 $xToken = $hdrArray['X-Subject-Token'];
             }catch(Exception $ex){
