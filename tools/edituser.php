@@ -2,9 +2,11 @@
     session_start();
     include("../functions.php");
     include("../connection.php");
-    check_login($con);
+    include("../user_database.php");
+
+    check_login();
     check_admin();
-    $fname = $lname = $email = $role= "";
+    $fname = $lname = $role= "";
 
     $jsonData = file_get_contents('php://input');
     $data = json_decode($jsonData,true);
@@ -14,7 +16,6 @@
     $uid = $dataArr['uid'];
     $fname = $dataArr['fname'];
     $lname = $dataArr['lname'];
-    $email = $dataArr['email'];
     $role = $dataArr['role'];
 
 
@@ -36,18 +37,6 @@
             $q_fname = $input_fname;
             $q_lname = $input_lname;
         }
-        
-        // Validate email address
-        $input_address = trim($email);
-        if(empty($input_address)){
-            echo json_encode(["response"=>"Please fill in all fields"]);
-            die;
-        } elseif(filter_var($input_address, FILTER_VALIDATE_EMAIL)){
-            $q_email = $input_address;
-        } else{
-            echo json_encode(["response"=>"Please provide a valid email address"]);
-            die;
-        }
     
         // Validate role
         $input_role = $role;
@@ -63,27 +52,15 @@
         
     
         // Prepare an update statement
-        $data = array(
-            'fname' => $q_fname,
-            'lname' => $q_lname,
-            'email' => $q_email,
-            'role' => $q_role
-        );
+        $data = array("user"=>array(
+            'description' => $q_fname.' '.$q_lname,
+            'website' => $q_role
+        ));
     
         $reqData = json_encode($data);
-        
-        $rest_request = "http://localhost:80/api/user/update/".$uid;
-        $client = curl_init();
-        curl_setopt($client, CURLOPT_URL,$rest_request);
-        curl_setopt($client, CURLOPT_POST, true);
-        curl_setopt($client, CURLOPT_POSTFIELDS, $reqData);
-        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($client);
-        curl_close($client);
-
+        updateUser($id,$reqData,$_SESSION['token'],$con);
         echo json_encode(["response"=>"Successful Update"]);
         die;
-    
     }
 
 ?>

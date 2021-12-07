@@ -3,7 +3,8 @@ session_start();
 
     include("connection.php");
     include("functions.php");
-    $user_data = check_login($con);
+    include("user_database.php");
+    check_login();
     check_admin();
 ?>
 
@@ -55,7 +56,7 @@ session_start();
                         <input name = "fname" type="text" class = "input-box" placeholder= "First Name" id="edit_fname">
                         <input name = "lname" type="text" class = "input-box" placeholder= "Last Name" id="edit_lname" >
                         <input name = "username" type="text" class = "input-box" placeholder= "Username" id="edit_uname" readonly>
-                        <input name = "email" type="text" class = "input-box" placeholder= "Email" id="edit_mail">
+                        <input name = "email" type="text" class = "input-box" placeholder= "Email" id="edit_mail" readonly>
                         <input type="hidden" name="id" value="" id="key_field">
                         <select name="role_select" class = "input-box styleselect" id="edit_role">
                                 <option value="ADMIN">Admin</option>
@@ -130,13 +131,9 @@ session_start();
 
                     <?php
                    
-                    $rest_request = "http://localhost:80/api/users";
-                    $client = curl_init($rest_request);
-                    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
-                    $response = curl_exec($client);
-                    curl_close($client);
-                    $result = json_decode($response,true);
-
+                  
+                    $userTable = getUsers($_SESSION['token']);
+                    $result = $userTable['users'];
 
                     if(count($result)>0){
                         echo '<table class="content-table table-sortable">';
@@ -154,22 +151,29 @@ session_start();
                             echo "</thead>";
                             echo "<tbody>";
                             foreach($result as $row){
-                                echo "<tr id=row_".$row['_id'].">";
-                                echo "<td>" . $row['_id'] . "</td>";
-                                echo "<td>" . $row['name'] . "</td>";
-                                echo "<td>" . $row['surname'] . "</td>";
-                                echo "<td id=uname_".$row['_id'].">". $row['username'] . "</td>";
+                                $appInfo = appInfoByKeyrockID($row['id'],$con);
+                                $confirmed = $appInfo['confirmed'];
+                                $appID = $appInfo['id'];
+                                $nameSlices = explode(" ", $row['description']);
+                                $fname = $nameSlices[0];
+                                $lname = $nameSlices[1];
+
+                                echo "<tr id=row_".$appID.">";
+                                echo "<td>" . (int)$appID . "</td>";
+                                echo "<td>" . $fname . "</td>";
+                                echo "<td>" . $lname . "</td>";
+                                echo "<td id=uname_".$appID.">". $row['username'] . "</td>";
                                 echo "<td>" . $row['email'] . "</td>";
-                                echo "<td>" . $row['role'] . "</td>";
-                                if($row['confirmed'] == 1){
-                                    echo "<td id=status_".$row['_id']." style=\"color:green;\">" . 'Confirmed' . "</td>";
+                                echo "<td>" . $row['website'] . "</td>";
+                                if($confirmed == 1){
+                                    echo "<td id=status_".$appID." style=\"color:green;\">" . 'Confirmed' . "</td>";
                                 }else{
-                                    echo "<td id=status_".$row['_id']." style=\"color:red;\">"  . 'Deactivated' . "</td>";
+                                    echo "<td id=status_".$appID." style=\"color:red;\">"  . 'Deactivated' . "</td>";
                                 }
                                 echo "<td>";
-                                    echo '<a href="javascript:statusUser('.$row['_id'].');"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
-                                    echo '<a href="javascript:editUser('. $row['_id'] .');"><img class = "conf-ico" src="/assets/editing.png" alt="change confirmed"></a>';
-                                    echo '<a href="javascript:delUser('.$row['_id'].');"><img class = "conf-ico" src="/assets/bin.png" alt="change confirmed"></a>';
+                                    echo '<a href="javascript:statusUser('.$appID.');"><img class = "conf-ico" src="/assets/activate.png" alt="change confirmed"></a>';
+                                    echo '<a href="javascript:editUser('. $appID .');"><img class = "conf-ico" src="/assets/editing.png" alt="change confirmed"></a>';
+                                    echo '<a href="javascript:delUser('.$appID.');"><img class = "conf-ico" src="/assets/bin.png" alt="change confirmed"></a>';
                                 echo "</td>";
                                 echo "</tr>";
                             }
