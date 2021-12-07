@@ -123,7 +123,7 @@ session_start();
                                 echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
                                 echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                 echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
-                                echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
+                                echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['email'] . '</p></div>';
                                 echo '<div><button class="favorite-button" onclick="delFave('. $row['_id'] .')"><img src="/assets/remove.png" alt="rfave"></button></div>';
                                 echo '</li>';
                             }

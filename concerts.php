@@ -163,11 +163,11 @@ session_start();
 
                         if(count($result) > 0 ){
                             foreach($result as $row){
-                                echo '<li class="concert-box" cid="'.$row['_id'].'" title="' .$row['title']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['username'].'" date="'.$row['date'].'">';
+                                echo '<li class="concert-box" cid="'.$row['_id'].'" title="' .$row['title']. '" artist="'.$row['artistname'].'" genre="'.$row['category'].'" organizer="'.getUnameByID($row['organizer'],$con)['email'].'" date="'.$row['date'].'">';
                                 echo '<div><h1>\'\'' . $row['title'] . '\'\'</h1></div>';
                                 echo '<div><h2>Artists: ' . $row['artistname'] . '</h2></div>';
                                 echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
-                                echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['username'] . '</p></div>';
+                                echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['email']. '</p></div>';
                                 $class = $func = "";
                                 if(isFave($row['_id'])){
                                     $class = "faved";

@@ -34,7 +34,7 @@ function getDataByID($id,$con){
 function getUnameByID($id,$con){
     check_login($con);
     check_user();
-    $query = "SELECT username FROM users WHERE id = '$id' LIMIT 1";
+    $query = "SELECT email FROM users WHERE id = '$id' LIMIT 1";
     $result = mysqli_query($con,$query);
     if($result && mysqli_num_rows($result) > 0){
         $user_data = mysqli_fetch_assoc($result);

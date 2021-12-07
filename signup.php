@@ -2,10 +2,12 @@
 session_start();
     include("connection.php");
     include("functions.php");
+    include("user_database.php");
+    include("parser.php");
     $user_data = already_login($con);
     
 
-    $data_empty_error = $email_format_error = $uname_exists_error = $email_exists_error = $pass_mismatch_error = false;
+    $data_empty_error = $email_format_error = $token_error = $email_exists_error = $pass_mismatch_error = false;
 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
         //something was posted
@@ -14,26 +16,75 @@ session_start();
         $firstname = $_POST['first_name'];
         $lastname = $_POST['last_name'];
         $email = $_POST['mail'];
-        $username = $_POST['user_name'];
         $pass = $_POST['pass_word'];
         $passrepeat = $_POST['pass_word_repeat'] ?? null;
         $role = $_POST['role_select'];
                 
-        if(!empty($firstname) && !empty($lastname) && !empty($email) &&!empty($username) && !empty($pass) && !empty($passrepeat)){
+        if(!empty($firstname) && !empty($lastname) && !empty($email) && !empty($pass) && !empty($passrepeat)){
             if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-                $result_uname = mysqli_query($con, "select * from users where username= '$username'");
-                $result_email = mysqli_query($con, "select * from users where email= '$email' ");
+                $result_email = mysqli_query($con, "select * from users where email= '$email'");
                
                 if($pass === $passrepeat){
-                    if(mysqli_num_rows($result_uname)>0){
-                        $uname_exists_error = true;
+                    if(mysqli_num_rows($result_email)>0){
+                        //Can't use the same email twice
+                        $email_exists_error = true;
                     }else{
-                        if(mysqli_num_rows($result_email)>0){
-                            $email_exists_error = true;
-                        }else{
-                            $query = "insert into users(name,surname,username,password,email,role,confirmed) values('$firstname','$lastname','$username','$pass','$email','$role',FALSE)";
-                            mysqli_query($con, $query);
+                        //Create new user in the IDM service
+
+                        //Automatically generating username but actually it is not usefull anywhere
+                        $sliced = explode("@",$email);
+                        $uname = $sliced[0];
+                        //JSON file containing new user's data
+                        $newData = array("user"=>array("email"=>"$email","username"=>"$uname","password"=>"$pass","description"=>"$firstname"." "."$lastname","website"=>"$role","enabled"=>true));
+                        
+                        //In order to create a new user we need to acquire a new admin token to access the service - UNSAFE - IN RELEASE THIS SHOULD NOT BE PRESENT - OTHER WAY SHOULD BE USED
+                        $user_creds = array("name"=>"dpetrou@isc.tuc.gr","password"=>"admin");
+
+                        $cc = curl_init();
+            
+                        //Build request to be sent to IDM-Keyrock service
+                        curl_setopt($cc, CURLOPT_URL, "http://192.168.1.11:3005/v1/auth/tokens");
+                        curl_setopt($cc, CURLOPT_RETURNTRANSFER, TRUE);
+                        curl_setopt($cc, CURLOPT_HEADER, 1);
+                        curl_setopt($cc, CURLOPT_POST, TRUE);
+                        curl_setopt($cc, CURLOPT_POSTFIELDS, json_encode($user_creds));
+                        curl_setopt($cc, CURLOPT_HTTPHEADER, array("Content-Type:application/json"));
+                        
+                        //Execute request and check if authentication is successfull by checking if a new token is generated
+                        $response = curl_exec($cc);
+                        $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
+                        $header = substr($response, 0, $header_size);
+                        $hdrArray = http_parse_headers($header);
+                        curl_close($cc);
+        
+                        $xToken="";
+                        try{
+                            $xToken = $hdrArray['X-Subject-Token'];
+                        }catch(Exception $ex){
+                            $xToken="";
+                        }                            
+
+                        if(!empty($xToken)){
+                            //Send new user's data to IDM service
+                            $cc = curl_init();
+                            
+                            //Build request to be sent to IDM-Keyrock service
+                            curl_setopt($cc, CURLOPT_URL, "http://192.168.1.11:3005/v1/users");
+                            curl_setopt($cc, CURLOPT_RETURNTRANSFER, TRUE);
+                            curl_setopt($cc, CURLOPT_HEADER, FALSE);
+                            curl_setopt($cc, CURLOPT_POST, TRUE);
+                            curl_setopt($cc, CURLOPT_POSTFIELDS, json_encode($newData));
+                            curl_setopt($cc, CURLOPT_HTTPHEADER, array("Content-Type:application/json","X-Auth-token:".$xToken));
+                            $response = curl_exec($cc);
+                            curl_close($cc);
+
+                            $newInfo = json_decode($response,true);
+                            $newKeyrockID = $newInfo["user"]["id"];
+
+                            associateUserIDs($email,$newKeyrockID,$con);
                             header("Location: login.php");
+                        }else{
+                            $token_error = true;
                         }
                     }
                 }else{
@@ -97,7 +148,6 @@ session_start();
                         <input type="text" class = "input-box" placeholder= "First Name" name ="first_name">
                         <input type="text" class = "input-box" placeholder= "Last Name" name="last_name">
                         <input type="text" class = "input-box" placeholder= "yourname@example.com" name="mail">
-                        <input type="text" class = "input-box" placeholder= "Username" name="user_name">
                         <input type="password" class = "input-box" placeholder= "Password" name="pass_word">
                         <input type="password" class = "input-box" placeholder= "Repeat Password" name="pass_word_repeat">
 
@@ -118,11 +168,11 @@ session_start();
                             if($pass_mismatch_error){
                                 echo '<p class="error-msg"><span> Passwords do not match. Please try again</span></p>';
                             }
-                            if($uname_exists_error){
-                                echo '<p class="error-msg"><span> This username is already in use. Please try again</span></p>';
+                            if($token_error){
+                                echo '<p class="error-msg"><span> Internal Server Error. Please try again later</span></p>';
                             }
                             if($email_exists_error){
-                                echo '<p class="error-msg"><span> This email has already been used. Please try again</span></p>';
+                                echo '<p class="error-msg"><span> This email has already been used/span></p>';
                             }
                         ?>
                         <a href="login.php" class = "sign-up-ref"> Already have an account? Log in </a>
