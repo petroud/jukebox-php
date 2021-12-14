@@ -39,7 +39,7 @@ function editConcert(id){
         concertData.push($(this).text());
     })
 
-
+    $('#idEditBox').html('Concert ID: '+concertData[0]);
     $('#edit_title').val(concertData[1]);
     $('#edit_artist').val(concertData[3]);
     document.getElementById("edit_date").valueAsDate = new Date(concertData[2]);
@@ -47,6 +47,82 @@ function editConcert(id){
     $('#key_field').val(concertData[0]);
 }
 
+
+
+
+function editTickets(id){
+    $('#ticketExitbtn').html('Cancel')
+    var x = document.getElementById("ticketback");
+
+    if (!x.style.display || x.style.display==="none") {
+        x.style.display = "block";        
+    }  
+
+    $(document).mouseup(function(e) {
+        var container = $("#ticket-box");
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0){
+            closeTicketer();
+        }
+    });
+
+    var concertData = [];
+    $('#row_'+id).find('td').each(function () {  
+        concertData.push($(this).text());
+    })
+    $('#concert_key_tickets').val(concertData[0]);
+    $('#idTicketBox').html('Concert ID: '+concertData[0]);
+
+    $.ajax({
+        type:'get',
+        url:'/orion/get_concert_entity.php',
+        data:{
+            cid:id
+        },
+        success:function(res){
+            var ans = JSON.parse(res);
+            if(ans.response==="notfound"){
+                ticketError("Tickets are not set up yet");
+            }else if(res.response==="notauthorized"){
+                ticketError("You are NOT authorized for this concert"); 
+            }else{
+                document.getElementById("ticket_start_date").valueAsDate = new Date(ans.startdate);
+                document.getElementById("ticket_end_date").valueAsDate = new Date(ans.enddate);
+            }
+        }
+    })
+}
+
+
+function submitTickets(){
+    var startdate = $('#ticket_start_date').val();
+    var enddate = $('#ticket_end_date').val();
+
+    var cid = $('#concert_key_tickets').val();
+
+    $.ajax({
+        type:'post',
+        url:'orion/add_concert_entity.php',
+        data:
+        JSON.stringify({
+            sdate:startdate,
+            edate:enddate,
+            cid:cid
+        }),
+        dataType:"JSON",
+        success:function(res){
+            var ans = res;
+            if(ans.response==="dateerror"){
+                ticketError("Check your date input");
+            }else if(ans.response==="notauthorized"){
+                ticketError("You are NOT authorized for this concert");
+            }else{
+                ticketSuccess("Ticket sales successfully scheduled");
+            }
+        }
+    })
+
+}
 
 
 function newConcert(){
@@ -61,7 +137,7 @@ function newConcert(){
         var container = $("#adder-box");
         // if the target of the click isn't the container nor a descendant of the container
         if (!container.is(e.target) && container.has(e.target).length === 0){
-            cleanAdder();
+            closeAdder();
         }
     });    
 }
@@ -88,7 +164,7 @@ function addConcert(){
             if(res.response === "New concert added!"){
                 newSuccess("Added successfully!");
                 $('#addExitbtn').html('Close');
-                $('#concert-table tr:last').after('<tr id="row_'+res.newID+'"><td>'+res.newID+'</td> <td id="title_'+res.newID+'">'+title+'</td> <td>'+date+'</td> <td>'+artist+'</td> <td>'+genre+'</td> <td> <a href="javascript:editConcert('+res.newID+')"><img class = "conf-ico" src="/assets/editing.png" alt="edit concert"></a><a href="javascript:delConcert('+res.newID+')"><img class = "conf-ico" src="/assets/bin.png" alt="delete concert"></a></td> </tr>');
+                $('#concert-table tr:last').after('<tr id="row_'+res.newID+'"><td>'+res.newID+'</td> <td id="title_'+res.newID+'">'+title+'</td> <td>'+date+'</td> <td>'+artist+'</td> <td>'+genre+'</td> <td> <a href="javascript:editConcert('+res.newID+')"><img class = "conf-ico" src="/assets/editing.png" alt="edit concert"></a><a href="javascript:editTickets('+res.newID+')"><img class = "conf-ico" src="/assets/ticket.png" alt="edit concert tickets"></a><a href="javascript:delConcert('+res.newID+')"><img class = "conf-ico" src="/assets/bin.png" alt="delete concert"></a></td> </tr>');
                 $(this).delay(2000).queue(function() {
                     $(this).hide();
                     resetAdder();
@@ -191,6 +267,31 @@ function newNothing(){
     x.style.display = "none";
 }
 
+
+function ticketSuccess(text){
+    var x = document.getElementById("ticketResBox");
+    var y = document.getElementById("ticketResMsg")
+    x.style.display = "block";
+    y.innerText = text;
+    y.style.color = "#33804C";    
+    return;
+}
+
+function ticketError(text){
+    var x = document.getElementById("ticketResBox");
+    var y = document.getElementById("ticketResMsg")
+    x.style.display = "block";
+    y.innerText = text;
+    y.style.color = "#870900";    
+    return;
+}
+
+function ticketNothing(){
+    var x = document.getElementById("ticketResBox");
+    x.style.display = "none";
+}
+
+
 function resetAdder(){
     newNothing();
     $('#new_title').val('');
@@ -209,5 +310,14 @@ function closeEditor(){
 function closeAdder(){
     var x = document.getElementById("adderback");
     dispNothing();
+    resetAdder();
+    x.style.display = "none";
+}
+
+function closeTicketer(){
+    var x = document.getElementById("ticketback");
+    document.getElementById("ticket_start_date").valueAsDate = new Date("");
+    document.getElementById("ticket_end_date").valueAsDate = new Date("");
+    ticketNothing();
     x.style.display = "none";
 }

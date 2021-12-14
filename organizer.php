@@ -49,6 +49,7 @@ session_start();
         <div class="editor-box" id="editor-box">
             <h1><span class="waving" style="margin-left:-20px !important">Edit Concert Information</span></h1>
                     <form method="post" class="editor-form">
+                        <p style="margin-left:90px; margin-bottom:30px; font-size:25px;" id="idEditBox"></p>
                         <input name = "title" type="text" class = "input-box" placeholder= "Concert Title" id="edit_title">
                         <input name = "artist" type="text" class = "input-box" placeholder= "Artist Name" id="edit_artist" >
                         <input name = "date" type="date" class = "input-box" placeholder= "Date" id="edit_date">
@@ -72,6 +73,30 @@ session_start();
                         <button type="button" class="button" onclick="addConcert()">Add</button>
                         <button type="button" class="button btn-2 repos" onclick="closeAdder()" id="addExitbtn">Cancel</button>
                         <div class="resultBox" id="addResBox"><p class="result-msg" id="addResMsg"></p></div>
+                    </form>
+        </div>
+    </div> 
+
+    <div class="overlay" id="ticketback"> 
+        <div class="editor-box" style="margin-top:100px !important" id="ticket-box">
+            <h1><span class="waving" style="margin-left: 5px !important">Ticket Sales Manager</span></h1>
+                    <form method="post" class="editor-form">
+                        <p style="margin-left:90px; margin-bottom:30px; font-size:25px;" id="idTicketBox"></p>
+                        <p style="margin-left:30px; margin-bottom:0px; font-size:20px">Available From:</p>
+                        <input name = "date" type="date" class = "input-box" placeholder= "Date" id="ticket_start_date">
+                        <p style="margin-left:30px; margin-bottom:0px; font-size:20px">Available To:</p>
+                        <input name = "date" type="date" class = "input-box" placeholder= "Date" id="ticket_end_date">
+                        <input type="hidden" name="id" value="" id="concert_key_tickets">
+                        <br>
+                        <br>
+                        <button type="button" class="button" style="width:250px !important; margin-left: 45px !important" onclick="submitTickets()">Schedule Sales</button>
+                        <br>
+                        <br>
+                        <button type="button" class="button" style="width:250px !important; margin-left: 45px !important; background-color: #b83939 !important" onclick="outTickets()">Sold Out</button>
+                        <br>
+                        <br>
+                        <button type="button" class="button btn-2 repos" style="margin-left:108px" onclick="closeTicketer()" id="ticketExitbtn">Cancel</button>
+                        <div class="resultBox" id="ticketResBox"><p class="result-msg" id="ticketResMsg"></p></div>
                     </form>
         </div>
     </div> 
@@ -139,7 +164,6 @@ session_start();
                 </div>
                               
             <?php
-                    // Include config file
                     $uid = $_SESSION['user_id'];
                     $rest_request = "http://localhost:80/api/organizer/".$uid;
                     $client = curl_init($rest_request);
@@ -172,6 +196,7 @@ session_start();
                                     echo "<td>" . $row['category'] . "</td>";
                                     echo "<td>";
                                         echo '<a href="javascript:editConcert('.$row['_id'].')"><img class = "conf-ico" src="/assets/editing.png" alt="edit concert"></a>';
+                                        echo '<a href="javascript:editTickets('.$row['_id'].')"><img class = "conf-ico" src="/assets/ticket.png" alt="edit concert tickets"></a>';
                                         echo '<a href="javascript:delConcert('.$row['_id'].')"><img class = "conf-ico" src="/assets/bin.png" alt="delete concert"></a>';
                                     echo "</td>";
                                 echo "</tr>";
