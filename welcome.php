@@ -15,6 +15,7 @@ session_start();
     <title>Jukebox | Welcome</title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/welcome.css">
+    <link rel="stylesheet" href="/src/notifications.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
@@ -75,6 +76,36 @@ session_start();
                          <a href="mailto:admin@jukebox.com">Report a problem</a>
                         
                      </div>
+                </div>
+                    <button class="notifbtn"><img src="assets/bell.png" alt="Notifications"></button>
+                <div class="notifications">
+                    <div class="notification-content">
+                        <div class="notification">
+                            <p>Test</p>
+                            <p>- 1 Hour ago</p>
+                        </div>
+                        <div class="notification">
+                            <p>Test</p>
+                            <p>- 1 Hour ago</p>
+                        </div>
+                        <div class="notification">
+                            <p>Test</p>
+                            <p>- 1 Hour ago</p>
+                        </div>
+                        <div class="notification">
+                            <p>Test</p>
+                            <p>- 1 Hour ago</p>
+                        </div>
+                        <div class="notification">
+                            <p>Test</p>
+                            <p>- 1 Hour ago</p>
+                        </div>
+                        <div class="notification">
+                            <p>Test</p>
+                            <p>- 1 Hour ago</p>
+                        </div>
+                    </div>
+
                 </div>
                 <div>      
                     <button id="logoutBtn" type="button" class="logoutbtn" title="Sign out from <?php echo $_SESSION['uname'];?>">
