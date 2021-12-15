@@ -1,0 +1,90 @@
+.notif-dropdown{
+
+}
+
+.notifications{
+    position: relative;
+    left:760px;
+    top:70px;
+}
+
+.notification{
+    width: 260px;
+    margin-left: 15px;
+    border-bottom: solid #8c8c8c;
+    border-width: thin;
+    padding: 5px 0 5px 0;
+}
+
+.concert-info{
+    text-decoration: none;
+}
+
+.notification:hover{
+    background-color: #87bba2;
+}
+
+
+.notification-content{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: absolute;
+    width: 300px;
+    height: 400px;
+    right:-40px;
+    border-radius: 40px;
+    padding:10px;
+    padding-right: 5px;
+    background-color: rgba(255,255,255,0.8)
+}
+
+.notifbtn{
+    width: 65px;
+    height: 65px;
+    left: 800px;
+    top: 30px;
+    position: relative;
+    background-color: #86bbd8;
+}
+
+.notification-content::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+.notification-content::-webkit-scrollbar-thumb {
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
+}
+.notification-content::-webkit-scrollbar-track-piece:end {
+    background: transparent;
+    margin-bottom: 30px; 
+}
+
+.notification-content::-webkit-scrollbar-track-piece:start {
+    background: transparent;
+    margin-top: 30px;
+}
+  
+.notifbtn img{
+width:32px;
+margin-left:1px;
+margin-top:1px;
+cursor:pointer;
+}
+  
+.notifbtn:hover{
+box-shadow: 0 14px 18px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+background:#87bba2;
+border: 0px #86bbd8;
+}
+  
+.wavingNotif{
+background: linear-gradient(269deg, #cc6363, #dba0a0, #ffffff);
+background-size: 600% 600%;
+
+-webkit-animation: AnimationName 6s ease infinite;
+animation: AnimationName 6s ease infinite;
+}
+  

@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'e774ae13dad97e32c761f74c05e6a7f09eaa83e3',
+        'reference' => 'c9baf09cb939823f55ca2f03119077c3045d7977',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'e774ae13dad97e32c761f74c05e6a7f09eaa83e3',
+            'reference' => 'c9baf09cb939823f55ca2f03119077c3045d7977',
             'dev_requirement' => false,
         ),
         'jean85/pretty-package-versions' => array(
@@ -29,12 +29,12 @@
             'dev_requirement' => false,
         ),
         'mongodb/mongodb' => array(
-            'pretty_version' => '1.10.0',
-            'version' => '1.10.0.0',
+            'pretty_version' => '1.10.1',
+            'version' => '1.10.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../mongodb/mongodb',
             'aliases' => array(),
-            'reference' => 'b0bbd657f84219212487d01a8ffe93a789e1e488',
+            'reference' => '9e0da590ec94e8af9a0ee065294627ffaee6244e',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-php80' => array(
