@@ -19,8 +19,12 @@ session_start();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
+    
     <script src="/src/welcome.js"></script>
+    <script src="/src/notification.js"></script>
 
     <style>
         body {
@@ -77,33 +81,10 @@ session_start();
                         
                      </div>
                 </div>
-                    <button class="notifbtn"><img src="assets/bell.png" alt="Notifications"></button>
+                    <button class="notifbtn"><img src="assets/bell.png" alt="Notifications" onclick="fetchNotifications()"></button>
                 <div class="notifications">
-                    <div class="notification-content">
-                        <div class="notification">
-                            <p>Test</p>
-                            <p>- 1 Hour ago</p>
-                        </div>
-                        <div class="notification">
-                            <p>Test</p>
-                            <p>- 1 Hour ago</p>
-                        </div>
-                        <div class="notification">
-                            <p>Test</p>
-                            <p>- 1 Hour ago</p>
-                        </div>
-                        <div class="notification">
-                            <p>Test</p>
-                            <p>- 1 Hour ago</p>
-                        </div>
-                        <div class="notification">
-                            <p>Test</p>
-                            <p>- 1 Hour ago</p>
-                        </div>
-                        <div class="notification">
-                            <p>Test</p>
-                            <p>- 1 Hour ago</p>
-                        </div>
+                    <div class="notification-content" id="notBox">
+                        
                     </div>
 
                 </div>
