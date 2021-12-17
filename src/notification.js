@@ -12,13 +12,30 @@ function fetchNotifications(){
             notifDiv.innerHTML = "";
 
             response = JSON.parse(res);
+            var unseenExists = false;
     
             for(var i=0 ; i<response.length; i++){
                 var item = response[i];            
                 var tmpDiv = document.createElement('div');
-                tmpDiv.innerHTML = '<p>'+item.msg+'</p><p>- '+item.time+'</p>'
+                tmpDiv.setAttribute("id","notification_"+item.notifID);
+                var inner = '<p>'+item.msg+'</p><p>- '+item.time+'</p>';
+
+                if(item.seen == 0){
+                    unseenExists = true;
+                    var seenLink = "<a href=\"javascript:notificationSeen("+item.notifID+");\" id=\"seenLink_"+item.notifID+"\">Mark as seen</a>";
+                    var inner = inner+seenLink;
+                }
+                tmpDiv.innerHTML = inner;
                 tmpDiv.className = "notification";
                 notifDiv.insertBefore(tmpDiv,notifDiv.firstChild);
+            }
+
+            if(unseenExists){
+                var notifIco = document.getElementById("notifImg");
+                notifIco.src = "assets/bellfull.png";
+            }else{
+                var notifIco = document.getElementById("notifImg");
+                notifIco.src = "assets/bell.png";
             }
         }
     });
@@ -26,6 +43,22 @@ function fetchNotifications(){
     setTimeout(fetchNotifications, 5000);
 }
 
+
+function notificationSeen(nid){
+    $.ajax({
+        type: "post",
+        url: "notification/notificationSeen.php",
+        data: {
+            nid:nid
+        },
+        success: function (response) {
+            var notification = document.getElementById("notification_"+nid);
+            var seenPrompt = document.getElementById("seenLink_"+nid);
+            notification.removeChild(seenPrompt);
+
+        }
+    });
+}
 function notifyme() { 
     var x = document.getElementById('notifs');
     if (x.style.display === 'none') {

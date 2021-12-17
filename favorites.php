@@ -90,7 +90,7 @@ session_start();
 
                 <?php
                 if($_SESSION['user_role'] === "USER"){
-                 echo '<button class="notifbtn"><img src="assets/bell.png" alt="Notifications" onclick="notifyme()"></button>
+                 echo '<button class="notifbtn"  onclick="notifyme()"><img src="assets/bell.png" alt="Notifications" id="notifImg"></button>
                     <div class="notifications" id="notifs">
                         <div class="notification-content" id="notBox">
                             

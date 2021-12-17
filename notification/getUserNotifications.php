@@ -20,7 +20,7 @@
         while($row = mysqli_fetch_array($result)){
             $dateCreated = $row['footprint'];
             $time = timeInterval($dateCreated)." ago";
-            $data = array("msg"=>$row['message'],"time"=>timeInterval($row['footprint'])." ago");
+            $data = array("msg"=>$row['message'],"time"=>timeInterval($row['footprint'])." ago","seen"=>$row['seen'],"notifID"=>$row['id']);
             array_push($userNots,$data);
         }
     }else{
