@@ -18,14 +18,14 @@ function fetchNotifications(){
                 var item = response[i];            
                 var tmpDiv = document.createElement('div');
                 tmpDiv.setAttribute("id","notification_"+item.notifID);
-                var inner = '<p>'+item.msg+'</p><p>- '+item.time+'</p>';
+                var inner = '<div class="notifText"><p class="notifMsg">'+item.msg+'</p><p class="notifTime">- '+item.time+'</p>';
 
                 if(item.seen == 0){
                     unseenExists = true;
-                    var seenLink = "<a href=\"javascript:notificationSeen("+item.notifID+");\" id=\"seenLink_"+item.notifID+"\">Mark as seen</a>";
+                    var seenLink = "<a href=\"javascript:notificationSeen("+item.notifID+");\" id=\"seenLink_"+item.notifID+"\" class=\"marker\">Mark as seen</a>";
                     var inner = inner+seenLink;
                 }
-                tmpDiv.innerHTML = inner;
+                tmpDiv.innerHTML = inner+"</div>";
                 tmpDiv.className = "notification";
                 notifDiv.insertBefore(tmpDiv,notifDiv.firstChild);
             }

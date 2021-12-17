@@ -9,13 +9,37 @@
 .notification{
     width: 260px;
     margin-left: 15px;
-    border-bottom: solid #8c8c8c;
+    margin-bottom: 15px;
+    margin-top:15px;
+    background-color: rgba(200,200,200,0.8);
+    border-radius: 40px;
     border-width: thin;
-    padding: 5px 0 5px 0;
+    padding: 10px 0 15px 0;
 }
 
+.notifText{
+    padding: 0 15px 15px 15px;
+    cursor:initial;
+}
+
+.notifMsg{
+    text-align: center;
+    font-size: 18px;
+    cursor:initial;
+}
+
+.notifTime{
+    color: #404040;
+    padding-top: 7px;
+    font-weight: bold;
+    cursor:no-drop
+}
+
+
 .marker{
-    margin-left: 150px;
+    margin-left: 120px;
+    text-decoration: none;
+    color: #cc6363;
 }
 
 .concert-info{
@@ -23,7 +47,7 @@
 }
 
 .notification:hover{
-    background-color: #87bba2;
+    background-color: rgba(163,163,163,0.8)
 }
 
 .notification-content{
