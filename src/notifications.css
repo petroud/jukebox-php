@@ -1,7 +1,9 @@
 .notifications{
+    display: none;
     position: relative;
     left:760px;
     top:70px;
+    z-index: 10;
 }
 
 .notification{
@@ -20,7 +22,6 @@
     background-color: #87bba2;
 }
 
-
 .notification-content{
     overflow-y: scroll;
     overflow-x: hidden;
@@ -35,7 +36,7 @@
 }
 
 .notifbtn{
-    width: 65px;
+    width: 85px;
     height: 65px;
     left: 800px;
     top: 30px;
@@ -48,7 +49,7 @@
     margin-left:1px;
     margin-top:1px;
     cursor:pointer;
-    }
+}
 
 .notification-content::-webkit-scrollbar {
     width: 15px;

@@ -35,7 +35,7 @@ session_start();
     <title>Jukebox | Concerts </title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="/src/concerts.css">
-    <link rel="stylesheet" href="/src/scroll.css">
+    <link rel="stylesheet" href="/src/notifications.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&family=Work+Sans:ital,wght@0,100;0,200;0,400;0,500;0,600;1,100&display=swap" rel="stylesheet">
@@ -45,6 +45,8 @@ session_start();
     <script src="/src/concerts.js"> </script>
     <script src="/src/filter.js"> </script>
     <script src="/src/subscribtion.js"> </script>
+    <script src="/src/notification.js"> </script>
+
    
     <style>
         body {
@@ -133,6 +135,18 @@ session_start();
                         
                      </div>
                 </div>
+
+                <?php
+                if($_SESSION['user_role'] === "USER"){
+                 echo '<button class="notifbtn"><img src="assets/bell.png" alt="Notifications" onclick="notifyme()"></button>
+                    <div class="notifications" id="notifs">
+                        <div class="notification-content" id="notBox">
+                            
+                        </div>
+
+                    </div>';
+                }?>
+
                 <div>      
                     <button id="logoutBtn" type="button" class="logoutbtn" onclick="logout()" title="Sign out from <?php echo $_SESSION['uname'];?>">
                         <img src="assets/logout.png" alt="Logout">
