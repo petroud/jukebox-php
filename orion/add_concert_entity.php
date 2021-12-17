@@ -62,7 +62,8 @@ if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid
     "type": "concert",
     "startdate": "'.$sdate.'",
     "enddate": "'.$edate.'",
-    "organizer": "'.$uid.'"
+    "organizer": "'.$uid.'",
+    "soldout": false
     }',
     CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json'

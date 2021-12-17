@@ -3,6 +3,9 @@ session_start();
 
     include("connection.php");
     include("functions.php");
+    include("parser.php");
+    include("orion/subscription_utils.php");
+
     $user_data = check_login($con);
     check_user();
 
@@ -41,6 +44,7 @@ session_start();
 
     <script src="/src/concerts.js"> </script>
     <script src="/src/filter.js"> </script>
+    <script src="/src/subscribtion.js"> </script>
    
     <style>
         body {
@@ -169,6 +173,7 @@ session_start();
                                 echo '<div><h2>Category: ' . $row['category'] . '</h2></div>';
                                 echo '<div><p>Date: ' . $row['date'] . '<br>By: ' . getUnameByID($row['organizer'],$con)['email']. '</p></div>';
                                 $class = $func = "";
+
                                 if(isFave($row['_id'])){
                                     $class = "faved";
                                     $func = "removeFave(".$row['_id'].")";
@@ -176,6 +181,18 @@ session_start();
                                     $func = "addFave(".$row['_id'].")";
                                 }
                                 echo '<div><button class="favorite-button unfaved '.$class.'" id="btnconcert'. $row['_id'] .'" onclick="'.$func.'"><img src="" alt="fave" id="imgconcert'. $row['_id'] .'"></button></div>';
+
+                                if(availableForSubscriptions($row['_id'])){
+                                    $subclass = $subfunc = "";
+                                    if(isSubscribed($row['_id'],$con)){
+                                        $subclass = "subscribed";
+                                        $subfunc = "unsubscribe(".$row['_id'].")";
+                                    }else{
+                                        $subfunc = "subscribe(".$row['_id'].")";
+                                    }
+                                    echo '<div><button class="subscribe-button unsubscribed '.$subclass.'" id="subConcert'.$row['_id'].'" onclick="'.$subfunc.'"><img src="" alt="subbtn"></button><div>';
+                                }
+
                                 echo '</li>';
                             }
                             

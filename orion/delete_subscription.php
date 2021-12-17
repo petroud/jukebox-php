@@ -10,4 +10,4 @@ check_user();
 $cid = $_POST['cid'];
 $uid = $_SESSION['user_id'];
 
-addOrionSubscription($cid,$con);
+removeOrionSubscription($cid,$con);

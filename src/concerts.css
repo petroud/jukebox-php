@@ -14,10 +14,74 @@
   box-shadow: 0 14px 18px 0 rgba(255,255,255,0.24), 0 17px 50px 0 rgba(255,255,255,0.19);
 }
 
+
 .favorite-button img{
   margin-top: -3px;
   max-width: 60%;
   height: auto;
+}
+
+.faved{
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: rgb(255,255,255) !important;
+}
+
+.unfaved{
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: rgb(255,255,255) !important;
+}
+
+.faved img{
+  content: url(/assets/heartfull.png) !important;
+}
+.unfaved img{
+  content: url(/assets/heartempty.png);
+}
+
+
+.subscribe-button{
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: #ffffff;
+}
+
+.subscribe-button:hover{
+  background-color: #87bba2;
+  box-shadow: 0 14px 18px 0 rgba(255,255,255,0.24), 0 17px 50px 0 rgba(255,255,255,0.19);
+}
+
+.subscribe-button img{
+  margin-top: -3px;
+  margin-left: 0px;
+  max-width: 60%;
+  height: auto;
+}
+
+
+.subscribed{
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: rgb(255,255,255) !important;
+}
+
+.unsubscribed{
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;    
+  background-color: rgb(255,255,255) !important;
+}
+
+.subscribed img{
+  content: url(/assets/subed.png) !important;
+}
+.unsubscribed img{
+  content: url(/assets/addbell.png);
 }
 
 .filter-button-div{
@@ -109,26 +173,6 @@
   margin-top: 3px;
 }
 
-.faved{
-  width: 60px;
-  height: 60px;
-  border-radius: 50px;    
-  background-color: rgb(255,255,255) !important;
-}
-
-.unfaved{
-  width: 60px;
-  height: 60px;
-  border-radius: 50px;    
-  background-color: rgb(255,255,255) !important;
-}
-
-.faved img{
-  content: url(/assets/heartfull.png) !important;
-}
-.unfaved img{
-  content: url(/assets/heartempty.png);
-}
 
 
 .concert-container{
@@ -150,7 +194,7 @@
     border-radius: 40px;
     margin-top: 20px;
     margin-right: 40px;
-    background-color: rgba(59, 59, 59, 0.6);
+    background-color: rgba(59, 59, 59, 0.7);
     box-shadow: 0 14px 18px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.3);
 }
 
@@ -168,7 +212,7 @@
 
 .concert-box h2{
     text-align: center;
-    margin-top: 40px;
+    margin-top: 30px;
     color: #b8b56e
 }
 
