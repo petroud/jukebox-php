@@ -49,7 +49,7 @@
                 die;
         }
         $datetime = new DateTime();
-        $time = $datetime->format('y-m-d h:i:s');
+        $time = $datetime->format('y-m-d H:i:s');
        
         $sqlQuery = "INSERT INTO notifications(user_id,message,seen,footprint) values($uid,\"$notifMsg\",false,'$time')";
         $response = mysqli_query($con,$sqlQuery);   
