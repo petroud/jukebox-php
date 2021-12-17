@@ -17,8 +17,7 @@ function fetchNotifications(){
             for(var i=0 ; i<response.length; i++){
                 var item = response[i];            
                 var tmpDiv = document.createElement('div');
-                tmpDiv.setAttribute("id","notification_"+item.notifID);
-                var inner = '<div class="notifText"><p class="notifMsg">'+item.msg+'</p><p class="notifTime">- '+item.time+'</p>';
+                var inner = '<div class="notifText" id="notification_'+item.notifID+'"><p class="notifMsg">'+item.msg+'</p><p class="notifTime">- '+item.time+'</p>';
 
                 if(item.seen == 0){
                     unseenExists = true;
