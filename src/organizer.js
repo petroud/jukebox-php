@@ -14,8 +14,6 @@ function delConcert(id){
     }
 }
 
-
-
 function editConcert(id){
     $('#exitbtn').html('Cancel')
     var x = document.getElementById("editorback");
@@ -83,11 +81,30 @@ function editTickets(id){
             var ans = JSON.parse(res);
             if(ans.response==="notfound"){
                 ticketError("Tickets are not set up yet");
+                var soutBtn = document.getElementById("soutBtn");
+                soutBtn.setAttribute("onclick","");
+                soutBtn.innerHTML = "Set up first!";
+
             }else if(res.response==="notauthorized"){
                 ticketError("You are NOT authorized for this concert"); 
             }else{
                 document.getElementById("ticket_start_date").valueAsDate = new Date(ans.startdate);
                 document.getElementById("ticket_end_date").valueAsDate = new Date(ans.enddate);
+
+                var schedBtn = document.getElementById("schedBtn");
+
+                schedBtn.innerHTML("Reschedule Tickets");
+                schedBtn.setAttribute("onclick","")
+
+                if(ans.soldout === 1){
+                    var soutBtn = document.getElementById("soutBtn");
+                    soutBtn.setAttribute("onclick","undoSoldOutConcert()");
+                    soutBtn.innerHTML = "Resell Tickets";
+                }else{
+                    var soutBtn = document.getElementById("soutBtn");
+                    soutBtn.setAttribute("onclick","soldOutConcert()");
+                    soutBtn.innerHTML = "Sold Out";
+                }
             }
         }
     })
@@ -118,10 +135,70 @@ function submitTickets(){
                 ticketError("You are NOT authorized for this concert");
             }else{
                 ticketSuccess("Ticket sales successfully scheduled");
+                var soutBtn = document.getElementById("soutBtn");
+                soutBtn.setAttribute("onclick","soldOutConcert()");
+                soutBtn.innerHTML = "Sold Out";
             }
         }
     })
 
+}
+
+function soldOutConcert(){
+    var cid = $('#concert_key_tickets').val();
+
+    $.ajax({
+        type: "post",
+        url: "orion/update_entity_dates.php",
+        data: {
+            cid:cid
+        },
+        success: function (response) {
+            ticketSuccess("Concert tickets are marked sold out");
+            var soutBtn = document.getElementById("soutBtn");
+            soutBtn.setAttribute("onclick","undoSoldOutConcert()");
+            soutBtn.innerHTML = "Resell Tickets";
+        }
+    });
+}
+
+
+function soldOutConcert(){
+    var cid = $('#concert_key_tickets').val();
+
+    $.ajax({
+        type: "post",
+        url: "orion/update_entity_soldout.php",
+        data: {
+            cid:cid
+        },
+        success: function (response) {
+            ticketSuccess("Concert tickets are marked sold out");
+            var soutBtn = document.getElementById("soutBtn");
+            soutBtn.setAttribute("onclick","undoSoldOutConcert()");
+            soutBtn.innerHTML = "Resell Tickets";
+        }
+    });
+}
+
+function undoSoldOutConcert(){
+    var cid = $('#concert_key_tickets').val();
+
+    $.ajax({
+        type: "post",
+        url: "orion/update_entity_soldout.php",
+        data: {
+            cid:cid,
+            bool:false
+        },
+        success: function (response) {
+            ticketSuccess("Concert tickets are available again");
+            var soutBtn = document.getElementById("soutBtn");
+            soutBtn.style.display = "block";
+            soutBtn.setAttribute("onclick","soldOutConcert()");
+            soutBtn.innerHTML = "Sold Out";
+        }
+    });
 }
 
 

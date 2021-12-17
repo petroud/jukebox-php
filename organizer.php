@@ -89,10 +89,10 @@ session_start();
                         <input type="hidden" name="id" value="" id="concert_key_tickets">
                         <br>
                         <br>
-                        <button type="button" class="button" style="width:250px !important; margin-left: 45px !important" onclick="submitTickets()">Schedule Sales</button>
+                        <button type="button" class="button" style="width:250px !important; margin-left: 45px !important" onclick="submitTickets()" id="schedBtn">Schedule Sales</button>
                         <br>
                         <br>
-                        <button type="button" class="button" style="width:250px !important; margin-left: 45px !important; background-color: #b83939 !important" onclick="outTickets()">Sold Out</button>
+                        <button type="button" class="button" style="width:250px !important; margin-left: 45px !important; background-color: #b83939 !important" onclick="soldOutConcert()" id="soutBtn">Sold Out</button>
                         <br>
                         <br>
                         <button type="button" class="button btn-2 repos" style="margin-left:108px" onclick="closeTicketer()" id="ticketExitbtn">Cancel</button>
