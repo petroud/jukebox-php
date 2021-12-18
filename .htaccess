@@ -68,10 +68,6 @@ RewriteEngine On
 
 
 #----------------------------- SUBSCRIPTIONS -----------------------------#
-    #Check if user is subscribed to concert
-    RewriteCond %{REQUEST_METHOD} GET
-    RewriteRule ^api/subscription/check/user/(.*)/concert/(.*)$ ./api/api-is-subscribed.php [NC,L]
-
     #Get a user subscription to specific concert (JSON data in Request Body)
     RewriteCond %{REQUEST_METHOD} GET
     RewriteRule ^api/subscription/user/(.*)/concert/(.*)$ ./api/api-get-subscription.php?uid=$1&cid=$2 [QSA,NC,L]

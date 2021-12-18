@@ -140,23 +140,33 @@ function getEntityByID($cid){
     }
 }
 
-function disassociateDBsubscription($cid,$con){
+function disassociateDBsubscription($orionid){
     $uid = $_SESSION['user_id'];
 
-    $sqlQuery = "DELETE FROM subscriptions WHERE concert_id=$cid AND user_id = $uid";
-    mysqli_query($con,$sqlQuery);
+    $post = [
+      'orion_id' => $orionid,
+      'uid' => $uid,
+    ];
+  
+  $ch = curl_init('http://localhost:80/api/subscription/remove');
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+
+  curl_exec($ch);
+  curl_close($ch);
 }
 
 
-function getOrionID($cid,$con){
+function getOrionID($cid){
   $uid = $_SESSION['user_id'];
-  $sqlQuery = "SELECT orion_id FROM subscriptions WHERE concert_id=$cid AND user_id=$uid";
-  $response = mysqli_query($con,$sqlQuery);
-  if($response && mysqli_num_rows($response)>0){
-       $answer = mysqli_fetch_assoc($response);
-       $orion_id = $answer['orion_id'];
-       return $orion_id;
-  }
+
+  $rest_request = "http://localhost:80/api/subscription/user/".$uid."/concert/".$cid;
+  $client = curl_init($rest_request);
+  curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($client);
+  curl_close($client);
+  $result = json_decode($response,true);
+  return $result[0]["orion_id"];
 }
 
 
@@ -188,24 +198,33 @@ function availableForSubscriptions($cid){
 }
 
 //Checks if user is subscribed to the $cid defined concert by looking into subscriptions db
-function isSubscribed($cid,$con){
+function isSubscribed($cid){
     $uid = $_SESSION['user_id'];
 
-    $sqlQuery = "SELECT * FROM subscriptions WHERE concert_id=$cid AND user_id=$uid";
+    $rest_request = "http://localhost:80/api/subscription/user/".$uid."/concert/".$cid;
+    $client = curl_init($rest_request);
+    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($client);
+    curl_close($client);
+    $result = json_decode($response,true);
 
-    $result = mysqli_query($con,$sqlQuery);
-
-    if(mysqli_num_rows($result)>0){
+    if(array_key_exists(0,$result)){
+      if(array_key_exists("orion_id",$result[0])){
         return true;
+      }else{
+        return false;
+      }
+    }else{
+      return false;
     }
 }
 
 //Rest request to remove subscription from orion and disassociate document in local db
-function removeOrionSubscription($cid,$con){
+function removeOrionSubscription($cid){
 
   $ch = curl_init();
 
-  $orion_id = getOrionID($cid,$con);
+  $orion_id = getOrionID($cid);
 
   $url = "http://192.168.1.11:1026/v2/subscriptions/".$orion_id;
   echo $url;
@@ -218,7 +237,7 @@ function removeOrionSubscription($cid,$con){
   $response = curl_exec($ch);
 
   curl_close($ch);
-  disassociateDBsubscription($cid,$con);
+  disassociateDBsubscription($orion_id);
 }
 
 ?>
