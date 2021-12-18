@@ -27,7 +27,7 @@ function addOrionSubscription($cid,$con){
         },
         "notification": {
           "http": {
-            "url": "http://192.168.1.10:80/orion/accumulate.php?uid='.$uid.'"
+            "url": "http://192.168.1.10:80/orion/accumulate.php"
           },
           "attrs": [
             "startdate",
@@ -53,7 +53,6 @@ function addOrionSubscription($cid,$con){
       ));
       
       $response = curl_exec($ch);
-
       curl_close($ch);
 
       $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);

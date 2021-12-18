@@ -56,7 +56,13 @@ RewriteEngine On
     #Create notification for user redirection rule (JSON data in Request Body)
     RewriteCond %{REQUEST_METHOD} POST
     RewriteRule ^api/notifications/new$ ./api/api-create-notification.php [NC,L]
-    #-------------------------------------------------------------------------#
+
+    #Get all notifications of user redirection rule (user_id)
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/notifications/(.*)$ ./api/api-get-notifications.php?uid=$1 [QSA,NC,L]
+
+
+#-------------------------------------------------------------------------#
 
 
     

@@ -10,21 +10,19 @@
  
     $userNots = array();
 
-    $sqlQuery = "SELECT * FROM notifications WHERE user_id=$uid LIMIT 30";
 
-    $result = mysqli_query($con,$sqlQuery);
+    $rest_request = "http://localhost:80/api/notifications/".$uid;
+    $client = curl_init($rest_request);
+    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($client);
+    curl_close($client);
+    $result = json_decode($response,true);
 
-    $newDiv = "";
-
-    if(mysqli_num_rows($result) > 0){
-        while($row = mysqli_fetch_array($result)){
-            $dateCreated = $row['footprint'];
-            $time = timeInterval($dateCreated)." ago";
-            $data = array("msg"=>$row['message'],"time"=>timeInterval($row['footprint'])." ago","seen"=>$row['seen'],"notifID"=>$row['id']);
-            array_push($userNots,$data);
-        }
-    }else{
-        echo "non are returned...";
+    foreach($result as $row){
+        $nid = $row['_id']['$oid'];
+ 
+        $data = array("msg"=>$row['message'],"time"=>timeInterval($row['timestamp'])." ago","seen"=>$row['seen'],"notifID"=>$nid);
+        array_push($userNots,$data);
     }
 
     echo(json_encode($userNots));
