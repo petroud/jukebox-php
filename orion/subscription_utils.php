@@ -27,7 +27,7 @@ function addOrionSubscription($cid,$con){
         },
         "notification": {
           "http": {
-            "url": "http://192.168.1.10:80/api/accumulate/'.$uid.'"
+            "url": "http://192.168.1.10:80/orion/accumulate.php?uid='.$uid.'"
           },
           "attrs": [
             "startdate",

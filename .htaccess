@@ -50,9 +50,3 @@ RewriteEngine On
     RewriteRule ^api/favorite/new$ ./api/api-create-favorite.php [NC,L]
 
 #-------------------------------------------------------------------------#
-
-#-------------------------------- ACCUMULATE------------------------------#
-    #Receive new accumulation request from Orion
-    RewriteCond %{REQUEST_METHOD} POST
-    RewriteRule ^api/accumulate ./api/api-accumulate-sub.php [NC,L]
-#-------------------------------------------------------------------------#
