@@ -1,8 +1,4 @@
 <?php
-    session_start();
-    include_once("../functions.php");
-    check_login();
-    check_user();
     date_default_timezone_set('Europe/Athens');
 
 
@@ -28,6 +24,10 @@
         $msg3 = "' are now sold out";
         $msg4 = "' are now available";
         $msg5 = "' are no longer available from today";
+        $msg6 = "Dates of ticket sales for concert '";
+        $msg7 = "' are now scheduled from ";
+        $msg8 = " to ";
+        $msg9 = " again after they have been sold out";
 
 
         $notifMsg = "";
@@ -45,13 +45,37 @@
             case 4:
                 $notifMsg = $msg2.$cname.$msg5;            
                 break;
+            case 5:
+                $notifMsg = $msg6.$cname.$msg7.$sdate.$msg8.$edate;
+                break;
+            case 6:
+                $notifMsg = $msg2.$cnmae.$msg4.$msg9;
+                break;
             default:
                 die;
         }
         $datetime = new DateTime();
         $time = $datetime->format('y-m-d H:i:s');
-       
-        $sqlQuery = "INSERT INTO notifications(user_id,message,seen,footprint) values($uid,\"$notifMsg\",false,'$time')";
-        $response = mysqli_query($con,$sqlQuery);   
+
+
+        $data = array(
+            'message' => $notifMsg,
+            'timestamp' => $time,
+            'uid' => $uid
+        );
+
+        $reqData = json_encode($data);
+
+        $rest_request = "http://localhost:80/api/notifications/new";
+        $client = curl_init();
+        curl_setopt($client, CURLOPT_URL,$rest_request);
+        curl_setopt($client, CURLOPT_POST, true);
+        curl_setopt($client, CURLOPT_POSTFIELDS, $reqData);
+        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($client);
+
+        curl_close($client);
+        die;
+    
     }
 ?>

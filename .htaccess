@@ -50,3 +50,13 @@ RewriteEngine On
     RewriteRule ^api/favorite/new$ ./api/api-create-favorite.php [NC,L]
 
 #-------------------------------------------------------------------------#
+
+
+#----------------------------- NOTIFICATIONS -----------------------------#
+    #Create notification for user redirection rule (JSON data in Request Body)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/notifications/new$ ./api/api-create-notification.php [NC,L]
+    #-------------------------------------------------------------------------#
+
+
+    
