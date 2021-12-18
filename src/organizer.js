@@ -92,6 +92,8 @@ function editTickets(id){
                 document.getElementById("ticket_end_date").valueAsDate = new Date(ans.enddate);
 
                 var schedBtn = document.getElementById("schedBtn");
+                schedBtn.setAttribute("onclick","updateDates()");
+                schedBtn.innerHTML="Reschedule Sales";
 
                 if(ans.soldout === 1){
                     var soutBtn = document.getElementById("soutBtn");
@@ -157,8 +159,15 @@ function updateDates(){
             cid:cid
         }),
         dataType:"JSON",
-        success: function (response) {
-     
+        success: function (res) {
+            var ans = res;
+            if(ans.response==="dateerror"){
+                ticketError("Check your date input");
+            }else if(ans.response==="notauthorized"){
+                ticketError("You are NOT authorized for this concert");
+            }else{
+                ticketSuccess("Ticket sales dates updated");
+            }
         }
     });
 }
