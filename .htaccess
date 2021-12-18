@@ -60,13 +60,17 @@ RewriteEngine On
     #Get all notifications of user redirection rule (user_id)
     RewriteCond %{REQUEST_METHOD} GET
     RewriteRule ^api/notifications/(.*)$ ./api/api-get-notifications.php?uid=$1 [QSA,NC,L]
+
+    #Mark notification as seen
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/notifications/seen$ ./api/api-seen-notification.php [NC,L]
 #-------------------------------------------------------------------------#
 
 
 #----------------------------- SUBSCRIPTIONS -----------------------------#
-    #Check if user is subscribed to concert (JSON data in Request Body)
+    #Check if user is subscribed to concert
     RewriteCond %{REQUEST_METHOD} GET
-    RewriteRule ^api/subscription/check$ ./api/api-is-subscribed.php [NC,L]
+    RewriteRule ^api/subscription/check/user/(.*)/concert/(.*)$ ./api/api-is-subscribed.php [NC,L]
 
     #Get a user subscription to specific concert (JSON data in Request Body)
     RewriteCond %{REQUEST_METHOD} GET
