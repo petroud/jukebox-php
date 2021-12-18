@@ -1,6 +1,5 @@
 <?php
-    include("../functions.php");
-    include("../connection.php");
+    require_once "../functions.php";
     session_start();
     check_login();
     check_user();

@@ -1,6 +1,7 @@
 <?php
+ require_once "../functions.php";
+
  session_start();
- include("../functions.php");
  check_login();
  check_organizer();
 

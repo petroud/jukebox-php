@@ -1,6 +1,8 @@
 <?php
+check_login();
+check_user();
 
-function addOrionSubscription($cid,$con){
+function addOrionSubscription($cid){
 
     $uid = $_SESSION['user_id'];
 
@@ -80,12 +82,25 @@ function addOrionSubscription($cid,$con){
           die;
       }else{
         //Store the new subscription to local database for further procedure for notification prodcution later
-        $bool = 'false';
-        if($sout){
-            $bool = 'true';
-        }
-        $sqlQuery = "INSERT INTO subscriptions(orion_id,user_id,concert_id,sdate,edate,soldout) VALUES('$newSubID',$uid,$cid,'$sdate','$edate',$bool)";
-        mysqli_query($con,$sqlQuery);
+
+
+        $newSubData = '{
+          "concert_id":'.$cid.',
+          "user_id":'.$uid.',
+          "orion_id":"'.$newSubID.'",
+          "sdate":"'.$sdate.'",
+          "edate":"'.$edate.'"          
+        }';
+
+        $rest_request = "http://localhost:80/api/subscription/new";
+        $client = curl_init();
+        curl_setopt($client, CURLOPT_URL,$rest_request);
+        curl_setopt($client, CURLOPT_POST, true);
+        curl_setopt($client, CURLOPT_POSTFIELDS, $newSubData);
+        curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($client);
+
+        curl_close($client);
       }
 
 
@@ -129,34 +144,6 @@ function disassociateDBsubscription($cid,$con){
     $uid = $_SESSION['user_id'];
 
     $sqlQuery = "DELETE FROM subscriptions WHERE concert_id=$cid AND user_id = $uid";
-    mysqli_query($con,$sqlQuery);
-}
-
-function parseStartDate($cid,$con){
-    $uid = $_SESSION['user_id'];
-
-    $sqlQuery = "UPDATE subscriptions set start_parsed=true WHERE concert_id=$cid AND user_id = $uid";
-    mysqli_query($con,$sqlQuery);
-}
-
-function unparseStartDate($cid,$con){
-    $uid = $_SESSION['user_id'];
-
-    $sqlQuery = "UPDATE subscriptions set start_parsed=false WHERE concert_id=$cid AND user_id = $uid";
-    mysqli_query($con,$sqlQuery);
-}
-
-function parseEndDate($cid,$con){
-    $uid = $_SESSION['user_id'];
-
-    $sqlQuery = "UPDATE subscriptions set end_parsed=true WHERE concert_id=$cid AND user_id = $uid";
-    mysqli_query($con,$sqlQuery);
-}
-
-function unparseEndDate($cid,$con){
-    $uid = $_SESSION['user_id'];
-
-    $sqlQuery = "UPDATE subscriptions set end_parsed=false WHERE concert_id=$cid AND user_id = $uid";
     mysqli_query($con,$sqlQuery);
 }
 
@@ -213,6 +200,7 @@ function isSubscribed($cid,$con){
     }
 }
 
+//Rest request to remove subscription from orion and disassociate document in local db
 function removeOrionSubscription($cid,$con){
 
   $ch = curl_init();

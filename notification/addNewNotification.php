@@ -1,8 +1,10 @@
 <?php
+    check_login();
+    check_user();
     date_default_timezone_set('Europe/Athens');
 
 
-    function addNewNotification($jsonData,$con,$case){
+    function addNewNotification($jsonData,$case){
         $uid = $_SESSION['user_id'];
         $data = json_decode($jsonData,true);
         

@@ -1,7 +1,7 @@
 <?php
 session_start();
-include("../functions.php");
-include("../connection.php");
+require_once "../functions.php";
+require_once "../connection.php";
 include("../parser.php");
 include("subscription_utils.php");
 check_login();
