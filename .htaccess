@@ -60,8 +60,25 @@ RewriteEngine On
     #Get all notifications of user redirection rule (user_id)
     RewriteCond %{REQUEST_METHOD} GET
     RewriteRule ^api/notifications/(.*)$ ./api/api-get-notifications.php?uid=$1 [QSA,NC,L]
+#-------------------------------------------------------------------------#
 
 
+#----------------------------- SUBSCRIPTIONS -----------------------------#
+    #Check if user is subscribed to concert (JSON data in Request Body)
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/subscription/check$ ./api/api-is-subscribed.php [NC,L]
+
+    #Get a user subscription to specific concert (JSON data in Request Body)
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/subscription/user/(.*)/concert/(.*)$ ./api/api-get-subscription.php?uid=$1&cid=$2 [QSA,NC,L]
+
+    #Create new subscription for user on concert (JSON data in Request Body)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/subscription/new$ ./api/api-create-subscription.php [NC,L]
+
+    #Delete subscription of user on concert (Data included in POST)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/subscription/remove$ ./api/api-delete-subscription.php [NC,L]
 #-------------------------------------------------------------------------#
 
 
