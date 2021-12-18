@@ -53,7 +53,7 @@ if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_HEADER, FALSE);
     
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
 
     curl_setopt($ch, CURLOPT_POSTFIELDS,'{
     "startdate": "'.$sdate.'",
