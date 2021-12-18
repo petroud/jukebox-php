@@ -21,7 +21,7 @@ function fetchNotifications(){
 
                 if(item.seen == 0){
                     unseenExists = true;
-                    var seenLink = "<a href=\"javascript:notificationSeen("+item.notifID+");\" id=\"seenLink_"+item.notifID+"\" class=\"marker\">Mark as seen</a>";
+                    var seenLink = "<a href=\"javascript:notificationSeen('"+item.notifID+"');\" id=\"seenLink_"+item.notifID+"\" class=\"marker\">Mark as seen</a>";
                     var inner = inner+seenLink;
                 }
                 tmpDiv.innerHTML = inner+"</div>";

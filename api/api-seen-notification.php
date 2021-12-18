@@ -5,9 +5,12 @@ use MongoDB\BSON\ObjectID;
 if($conn){
     if(isset($_POST['nid'])){
         $nid = $_POST['nid'];
+        $uid = $_POST['uid'];
+
         $action = array('$set' => array('seen'=>true));
         $query = [
-            '_id' => new ObjectID(strval($nid))
+            '_id' => new ObjectID(strval($nid)),
+            'user_id' => intval($uid)
         ];        
         print_r($query);
         $notifications->updateOne($query,$action);

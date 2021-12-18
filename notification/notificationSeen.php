@@ -1,12 +1,22 @@
 <?php
 session_start();
-include("../functions.php");
-include("../connection.php");
+include "../functions.php";
+check_login();
+check_user();
+
 
 $uid = $_SESSION['user_id'];
 $nid = $_POST['nid'];
 
-$sqlQuery = "UPDATE notifications SET seen=true WHERE id=$nid AND user_id=$uid";
-mysqli_query($con,$sqlQuery);
+$postFields = [
+    'nid' => strval($nid),
+    'uid' => intval($uid)
+];
+
+$ch = curl_init('http://localhost:80/api/notifications/seen');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+curl_exec($ch);
+curl_close($ch);
 
 ?>
