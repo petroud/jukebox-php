@@ -15,5 +15,12 @@ if($conn){
         
         $cursor = $subscriptions->find($data)->toArray();
         echo json_encode($cursor);
+    }elseif (isset($_GET['subid'])) {
+        $oid= strval($_GET['subid']);
+        $data = [
+            "orion_id"=>strval($oid)
+        ];
+        $cursor = $subscriptions->find($data)->toArray();
+        echo json_encode($cursor);
     }
 }

@@ -68,18 +68,32 @@ RewriteEngine On
 
 
 #----------------------------- SUBSCRIPTIONS -----------------------------#
-    #Get a user subscription to specific concert (JSON data in Request Body)
+    #Get a user subscription to specific concert
     RewriteCond %{REQUEST_METHOD} GET
     RewriteRule ^api/subscription/user/(.*)/concert/(.*)$ ./api/api-get-subscription.php?uid=$1&cid=$2 [QSA,NC,L]
+
+    #Get a user subscription by orion id
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteRule ^api/subscription/orionid/(.*)$ ./api/api-get-subscription.php?subid=$1 [QSA,NC,L]
 
     #Create new subscription for user on concert (JSON data in Request Body)
     RewriteCond %{REQUEST_METHOD} POST
     RewriteRule ^api/subscription/new$ ./api/api-create-subscription.php [NC,L]
+
+    #Update existing subscription for user on concert (JSON data in Request Body)
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/subscription/update$ ./api/api-update-subscription.php [NC,L]
 
     #Delete subscription of user on concert (Data included in POST)
     RewriteCond %{REQUEST_METHOD} POST
     RewriteRule ^api/subscription/remove$ ./api/api-delete-subscription.php [NC,L]
 #-------------------------------------------------------------------------#
 
+
+#----------------------------- ORION UPDATER -----------------------------#
+    #Receive updates from ORION-CB upon context changes
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteRule ^api/handle/update$ ./api/api-update-handler.php [NC,L]
+#-------------------------------------------------------------------------#
 
     
