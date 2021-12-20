@@ -3,7 +3,7 @@
     function getUsers($token){
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, "http://192.168.1.11:3005/v1/users");
+        curl_setopt($ch, CURLOPT_URL, "http://localhost:3005/v1/users");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
 
@@ -66,7 +66,7 @@
         $keyrockID = getKeyrockIDByAppID($id,$con);
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://192.168.1.11:3005/v1/users/".$keyrockID);
+        curl_setopt($ch, CURLOPT_URL, "http://localhost3005/v1/users/".$keyrockID);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -79,7 +79,7 @@
     function updateUser($id,$data,$token,$con){
         $keyrockID = getKeyrockIDByAppID($id,$con);
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://192.168.1.11:3005/v1/users/".$keyrockID);
+        curl_setopt($ch, CURLOPT_URL, "http://localhost:3005/v1/users/".$keyrockID);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");

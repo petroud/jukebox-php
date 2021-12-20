@@ -43,7 +43,7 @@ session_start();
                         $cc = curl_init();
             
                         //Build request to be sent to IDM-Keyrock service
-                        curl_setopt($cc, CURLOPT_URL, "http://192.168.1.11:3005/v1/auth/tokens");
+                        curl_setopt($cc, CURLOPT_URL, "http://localhost:3005/v1/auth/tokens");
                         curl_setopt($cc, CURLOPT_RETURNTRANSFER, TRUE);
                         curl_setopt($cc, CURLOPT_HEADER, 1);
                         curl_setopt($cc, CURLOPT_POST, TRUE);
@@ -69,7 +69,7 @@ session_start();
                             $cc = curl_init();
                             
                             //Build request to be sent to IDM-Keyrock service
-                            curl_setopt($cc, CURLOPT_URL, "http://192.168.1.11:3005/v1/users");
+                            curl_setopt($cc, CURLOPT_URL, "http://localhost:3005/v1/users");
                             curl_setopt($cc, CURLOPT_RETURNTRANSFER, TRUE);
                             curl_setopt($cc, CURLOPT_HEADER, FALSE);
                             curl_setopt($cc, CURLOPT_POST, TRUE);
