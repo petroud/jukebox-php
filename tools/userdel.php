@@ -10,7 +10,7 @@
     if($_SESSION['user_id'] === $idToDelete){
         die;
     }else{
-        deleteUser($idToDelete,$_SESSION['token'],$con);
+        deleteUser($idToDelete,$_SESSION['xtoken'],$con);
     }
     
 

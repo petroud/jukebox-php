@@ -64,23 +64,57 @@
 
                     $userInfo = json_decode($answerIDM,true);
 
-                    //Assign required session variables for a achieving functionality later
-                    $_SESSION['token'] = $xToken;
-                    $_SESSION['uname'] = $userInfo['user']['username'];
-                    $_SESSION['email'] = $userInfo['user']['email'];
-                    $_SESSION['keyrock_id'] = $userInfo['user']['id'];
+                    //Acquire OAuth2.0 token for allowing access to PEP Proxy services
+
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                      CURLOPT_URL => 'http://192.168.1.11:3005/oauth2/token',
+                      CURLOPT_RETURNTRANSFER => true,
+                      CURLOPT_ENCODING => '',
+                      CURLOPT_MAXREDIRS => 10,
+                      CURLOPT_TIMEOUT => 0,
+                      CURLOPT_FOLLOWLOCATION => true,
+                      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                      CURLOPT_CUSTOMREQUEST => 'POST',
+                      CURLOPT_POSTFIELDS =>'grant_type=password&username='.$username.'&password='.$password.'',
+                      CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/x-www-form-urlencoded',
+                        'Authorization: Basic ODAzZjRmODQtYzY1OC00YzU2LTg4YmQtY2ViZWRmMDdlYjI0OjFhNWNhODNlLTk4ZTAtNDcwNS05NDQ2LWQ5YTkzZDk0MWZjYQ=='
+                      ),
+                    ));
                 
-                    $_SESSION['user_id'] = $userAppInfo['id'];
-                    $_SESSION['confirmed'] = $userAppInfo['confirmed'];
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                    $result = json_decode($response);
 
-                    $fullname = $userInfo['user']['description'];
-                    $sliced = explode(" ",$fullname);
-                    $_SESSION['first_name'] = $sliced[0];
-                    $_SESSION['last_name'] = $sliced[1];
+                    if($result != "Invalid grant: user credentials are invalid"){
 
-                    $_SESSION['user_role'] = $userInfo['user']['website'];
+                        //OAuth token 
+                        $oauthtoken = $result->access_token;
+                        //Assign required session variables for a achieving functionality later
 
-                    header("Location: welcome.php");
+                        $_SESSION['token'] = $oauthtoken;
+                        $_SESSION['xtoken'] = $xToken;
+                        $_SESSION['uname'] = $userInfo['user']['username'];
+                        $_SESSION['email'] = $userInfo['user']['email'];
+                        $_SESSION['keyrock_id'] = $userInfo['user']['id'];
+                    
+                        $_SESSION['user_id'] = $userAppInfo['id'];
+                        $_SESSION['confirmed'] = $userAppInfo['confirmed'];
+
+                        $fullname = $userInfo['user']['description'];
+                        $sliced = explode(" ",$fullname);
+                        $_SESSION['first_name'] = $sliced[0];
+                        $_SESSION['last_name'] = $sliced[1];
+
+                        $_SESSION['user_role'] = $userInfo['user']['website'];
+
+                        header("Location: welcome.php");
+                    }else{
+                        $auth_error = true;
+                        die;
+                    }
                 }
             }
         }else{

@@ -57,7 +57,6 @@
     
     //If the dates have changed inform user about change in dates
     if($sdate_new!=$sdate_old || $edate_new!=$edate_old){
-        file_put_contents($file,"dates changed");
         $message = "Dates for ticket sales of concert '".$title."' changed to: '".$sdate_new." - ".$edate_new."'";
         $time = new DateTime();
         $timestamp = $time->format('y-m-d H:i:s');
@@ -77,8 +76,7 @@
         curl_exec($client);
         curl_close($client);
     }
-    
-    
+
     if($sout_old!=$sout_new){
         //If the soldout state has changed inform user about new sold out state
         if(!$sout_new){

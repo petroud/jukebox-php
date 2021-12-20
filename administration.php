@@ -132,7 +132,7 @@ session_start();
                     <?php
                    
                   
-                    $userTable = getUsers($_SESSION['token']);
+                    $userTable = getUsers($_SESSION['xtoken']);
                     $result = $userTable['users'];
 
                     if(count($result)>0){

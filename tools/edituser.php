@@ -58,7 +58,7 @@
         ));
     
         $reqData = json_encode($data);
-        updateUser($id,$reqData,$_SESSION['token'],$con);
+        updateUser($id,$reqData,$_SESSION['xtoken'],$con);
         echo json_encode(["response"=>"Successful Update"]);
         die;
     }
