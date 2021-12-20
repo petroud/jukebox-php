@@ -1,5 +1,7 @@
 <?php
 
+header('Content-Type: application/json');
+
 include("../mongoconnection.php");
 
 //Return notifications of a specific user 

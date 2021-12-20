@@ -1,6 +1,10 @@
 <?php
+
+    header('Content-Type: application/json');
+
     include("../mongoconnection.php");
 
+    //If client has set an ID on the request the return specific concert, else return all concerts
     if($conn){
         if(isset($_GET['id'])){
             $id = $_GET['id'];

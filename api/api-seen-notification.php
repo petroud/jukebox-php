@@ -1,4 +1,5 @@
 <?php
+
 include("../mongoconnection.php");
 use MongoDB\BSON\ObjectID;
 
@@ -12,7 +13,6 @@ if($conn){
             '_id' => new ObjectID(strval($nid)),
             'user_id' => intval($uid)
         ];        
-        print_r($query);
         $notifications->updateOne($query,$action);
 
     }else{
