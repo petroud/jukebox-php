@@ -1,9 +1,0 @@
-mysql/jukebox/concerts.frm
-mysql/jukebox/concerts.ibd
-mysql/jukebox/db.opt
-mysql/jukebox/favorites.frm
-mysql/jukebox/favorites.ibd
-mysql/jukebox/users.frm
-mysql/jukebox/users.ibd
-config/*
-config/vendor/*

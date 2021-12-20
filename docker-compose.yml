@@ -1,0 +1,152 @@
+version: '3.3'
+services:
+    app-apache:
+        container_name: app-logic
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        depends_on:
+            - mysql_db
+        volumes:
+            - ./src:/var/www/html/
+        networks:
+             intranet1:
+                ipv4_address: 10.1.2.2
+        ports:
+            - 80:80
+            - 8000:80
+    dss-core:
+        container_name: dss-core
+        hostname: dss-core
+        build:
+          context: ./
+          dockerfile: Dockerfile_dssc
+        hostname: dss-core
+        networks:
+           intranet1:
+              ipv4_address: 10.1.2.3
+        expose:
+          - 80
+    keyrock:
+        image: fiware/idm
+        container_name: keyrock
+        hostname: keyrock
+        depends_on: 
+           - mysql_db
+        ports:
+           - 3005:3005
+           - 3443:3443
+        networks:
+          intranet1:
+           ipv4_address: 10.1.2.5
+        environment: 
+           - IDM_DB_HOST=mysql_db
+           - IDM_DB_USER=root
+           - IDM_DB_PASS=root
+           - IDM_HOST=http://localhost:3005
+           - IDM_PORT=3005
+           - IDM_HTTPS_ENABLED=false
+           - IDM_HTTPS_PORT=3443
+           - IDM_ADMIN_USER=admin
+           - IDM_ADMIN_EMAIL=dpetrou@isc.tuc.gr
+           - IDM_ADMIN_PASS=admin
+    dss-proxy:
+        image: fiware/pep-proxy
+        container_name: dss-proxy
+        hostname: dss-proxy
+        networks:
+            intranet1:
+              ipv4_address: 10.1.2.4
+        ports:
+          - 4001:4001
+        expose:
+          - 4001
+        depends_on:
+          - keyrock
+        environment:
+          - PEP_PROXY_APP_HOST=dss-core
+          - PEP_PROXY_APP_PORT=80
+          - PEP_PROXY_PORT=4001
+          - PEP_PROXY_IDM_HOST=keyrock
+          - PEP_PROXY_HTTPS_ENABLED=false
+          - PEP_PROXY_AUTH_ENABLED=false
+          - PEP_PROXY_IDM_SSL_ENABLED=false
+          - PEP_PROXY_IDM_PORT=3005
+          - PEP_PROXY_APP_ID=803f4f84-c658-4c56-88bd-cebedf07eb24
+          - PEP_PROXY_USERNAME=pep_proxy_f49e9df7-e0c4-46a8-bb3b-bb9305fc4e8e
+          - PEP_PASSWORD=pep_proxy_a16411d8-7512-4395-bf49-3e0b373175f6
+          - PEP_PROXY_PDP=idm
+    orion:
+        image: fiware/orion
+        hostname: orion
+        container_name: orion-cb
+        links:
+           - orion-mongo
+        command: -dbhost orion-mongo -dbuser admin -dbpwd admin
+        networks:
+           intranet1:
+              ipv4_address: 10.1.2.10
+        expose:
+           - 1026
+        ports:
+           - 1026:1026
+    mysql_db:
+        container_name: mysql_db        
+        image: mysql:5.7
+        restart: always
+        ports:
+          - '3306:3306'
+        volumes:
+            - ./mysql_data:/var/lib/mysql
+        command: mysqld --init-file="/var/lib/mysql/database/jukebox.sql"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        networks:
+           intranet1:
+              ipv4_address: 10.1.2.6
+    mongo:
+        image: mongo:latest
+        container_name: mongodb
+        restart: always
+        volumes:
+           - ./mongodb_data/database:/data/db
+        environment:
+           MONGO_INITDB_ROOT_USERNAME: admin
+           MONGO_INITDB_ROOT_PASSWORD: admin
+        ports: 
+           - 27018:27017
+        networks:
+            intranet1:
+               ipv4_address: 10.1.2.7
+    orion-mongo:
+        image: mongo:latest
+        container_name: mongodb-orion
+        restart: always
+        volumes:
+           - ./mongodb_orion_data/database:/data/db
+        environment:
+           MONGO_INITDB_ROOT_USERNAME: admin
+           MONGO_INITDB_ROOT_PASSWORD: admin
+        ports:
+           - 27017:27017
+        networks:
+           intranet1:
+               ipv4_address: 10.1.2.8
+    phpmyadmin:
+        container_name: sql-admin
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - '8080:80'
+        restart: always
+        environment:
+          PMA_HOST: mysql_db
+        depends_on:
+            - mysql_db
+        networks:
+           intranet1:
+              ipv4_address: 10.1.2.9
+networks:
+    intranet1:
+      ipam:
+        config:
+          - subnet: 10.1.2.0/24
