@@ -9,7 +9,7 @@ $curl = curl_init();
 
 $cid = $_GET['cid'];
 $uid = $_SESSION['user_id'];
-$rest_request = "http://192.168.1.11:1026/v2/entities/".$cid."?type=concert&options=keyValues";
+$rest_request = "http://orion-proxy:4001/v2/entities/".$cid."?type=concert&options=keyValues";
 
 curl_setopt_array($curl, array(
   CURLOPT_URL => $rest_request,
@@ -19,6 +19,7 @@ curl_setopt_array($curl, array(
   CURLOPT_TIMEOUT => 0,
   CURLOPT_FOLLOWLOCATION => true,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_HTTPHEADER => array('X-Auth-Token: '.$_SESSION['token']),
   CURLOPT_CUSTOMREQUEST => 'GET',
 ));
 

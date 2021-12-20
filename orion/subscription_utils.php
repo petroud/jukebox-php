@@ -29,7 +29,7 @@ function addOrionSubscription($cid){
         },
         "notification": {
           "http": {
-            "url": "http://192.168.1.10:80/api/handle/update"
+            "url": "http://dss-core:80/api/handle/update"
           },
           "attrs": [
             "startdate",
@@ -42,16 +42,14 @@ function addOrionSubscription($cid){
 
       $ch = curl_init();
 
-      curl_setopt($ch, CURLOPT_URL, "http://192.168.1.11:1026/v2/subscriptions");
+      curl_setopt($ch, CURLOPT_URL, "http://orion-proxy:4002/v2/subscriptions");
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
       curl_setopt($ch, CURLOPT_HEADER, TRUE);
-      
       curl_setopt($ch, CURLOPT_POST, TRUE);
-      
       curl_setopt($ch, CURLOPT_POSTFIELDS, $newSub);
-
       curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        "Content-Type: application/json"
+        'Content-Type: application/json',
+        'X-Auth-Token: '.$_SESSION['token']
       ));
       
       $response = curl_exec($ch);
@@ -83,7 +81,6 @@ function addOrionSubscription($cid){
       }else{
         //Store the new subscription to local database for further procedure for notification prodcution later
 
-
         $newSubData = '{
           "concert_id":'.$cid.',
           "user_id":'.$uid.',
@@ -92,12 +89,13 @@ function addOrionSubscription($cid){
           "edate":"'.$edate.'"          
         }';
 
-        $rest_request = "http://localhost:80/api/subscription/new";
+        $rest_request = "http://dss-proxy:4001/api/subscription/new";
         $client = curl_init();
         curl_setopt($client, CURLOPT_URL,$rest_request);
         curl_setopt($client, CURLOPT_POST, true);
         curl_setopt($client, CURLOPT_POSTFIELDS, $newSubData);
         curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($client, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
         $response = curl_exec($client);
 
         curl_close($client);
@@ -111,13 +109,14 @@ function getEntityByID($cid){
     $curl = curl_init();
 
     $uid = $_SESSION['user_id'];
-    $rest_request = "http://192.168.1.11:1026/v2/entities/".$cid."?type=concert&options=keyValues";
+    $rest_request = "http://orion-proxy:4002/v2/entities/".$cid."?type=concert&options=keyValues";
 
     curl_setopt_array($curl, array(
         CURLOPT_URL => $rest_request,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
+        CURLOPT_HTTPHEADER => array('X-Auth-Token: '.$_SESSION['token']),
         CURLOPT_TIMEOUT => 0,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
@@ -148,10 +147,10 @@ function disassociateDBsubscription($orionid){
       'uid' => $uid,
     ];
   
-  $ch = curl_init('http://localhost:80/api/subscription/remove');
+  $ch = curl_init('http://dss-proxy:4001/api/subscription/remove');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
   curl_exec($ch);
   curl_close($ch);
 }
@@ -160,9 +159,10 @@ function disassociateDBsubscription($orionid){
 function getOrionID($cid){
   $uid = $_SESSION['user_id'];
 
-  $rest_request = "http://localhost:80/api/subscription/user/".$uid."/concert/".$cid;
+  $rest_request = "http://dss-proxy:4001/api/subscription/user/".$uid."/concert/".$cid;
   $client = curl_init($rest_request);
   curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($client, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
   $response = curl_exec($client);
   curl_close($client);
   $result = json_decode($response,true);
@@ -178,10 +178,10 @@ function availableForSubscriptions($cid){
     //Request orion for the concert entity   
     $ch = curl_init();
 
-    curl_setopt($ch, CURLOPT_URL, "http://192.168.1.11:1026/v2/entities/".$cid."?options=keyValues");
+    curl_setopt($ch, CURLOPT_URL, "http://orion-proxy:4002/v2/entities/".$cid."?options=keyValues");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
     curl_setopt($ch, CURLOPT_HEADER, FALSE);
-
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
        'Accept: application/json'
     ));
@@ -201,8 +201,9 @@ function availableForSubscriptions($cid){
 function isSubscribed($cid){
     $uid = $_SESSION['user_id'];
 
-    $rest_request = "http://localhost:80/api/subscription/user/".$uid."/concert/".$cid;
+    $rest_request = "http://dss-proxy:4001/api/subscription/user/".$uid."/concert/".$cid;
     $client = curl_init($rest_request);
+    curl_setopt($client, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
     curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($client);
     curl_close($client);
@@ -225,13 +226,11 @@ function removeOrionSubscription($cid){
   $ch = curl_init();
 
   $orion_id = getOrionID($cid);
+  $url = "http://orion-proxy:4002/v2/subscriptions/".$orion_id;
 
-  $url = "http://192.168.1.11:1026/v2/subscriptions/".$orion_id;
-  echo $url;
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-  curl_setopt($ch, CURLOPT_HEADER, FALSE);
-  
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));  
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
   
   $response = curl_exec($ch);

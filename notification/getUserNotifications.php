@@ -10,9 +10,10 @@
     $userNots = array();
 
 
-    $rest_request = "http://localhost:80/api/notifications/".$uid;
+    $rest_request = "http://dss-proxy:4001/api/notifications/".$uid;
     $client = curl_init($rest_request);
     curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($client, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
     $response = curl_exec($client);
     curl_close($client);
     $result = json_decode($response,true);

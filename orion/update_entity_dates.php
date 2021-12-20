@@ -49,7 +49,7 @@ if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid
 
     $ch = curl_init();
 
-    curl_setopt($ch, CURLOPT_URL, "http://192.168.1.11:1026/v2/entities/".$cid."/attrs?options=keyValues");
+    curl_setopt($ch, CURLOPT_URL, "http://orion-proxy:4002/v2/entities/".$cid."/attrs?options=keyValues");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_HEADER, FALSE);
     
@@ -61,7 +61,8 @@ if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid
     }');
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        "Content-Type: application/json"
+        'Content-Type: application/json',
+        'X-Auth-Token: '.$_SESSION['token']
     ));
 
     $response = curl_exec($ch);

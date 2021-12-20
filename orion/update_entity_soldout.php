@@ -18,12 +18,13 @@ if(isset($_POST['bool'])){
 $curlAuth = curl_init();
 
 curl_setopt_array($curlAuth, array(
-CURLOPT_URL => 'localhost:80/api/concerts/'.$cid,
+CURLOPT_URL => 'http://dss-proxy:4001/api/concerts/'.$cid,
 CURLOPT_RETURNTRANSFER => true,
 CURLOPT_ENCODING => '',
 CURLOPT_MAXREDIRS => 10,
 CURLOPT_TIMEOUT => 0,
 CURLOPT_FOLLOWLOCATION => true,
+CURLOPT_HTTPHEADER => array('X-Auth-Token: '.$_SESSION['token']),
 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 CURLOPT_CUSTOMREQUEST => 'GET',
 ));
@@ -37,19 +38,17 @@ $resArray = json_decode($response,true);
 if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid){
   $ch = curl_init();
 
-  curl_setopt($ch, CURLOPT_URL, "http://192.168.1.11:1026/v2/entities/".$cid."/attrs/soldout");
+  curl_setopt($ch, CURLOPT_URL, "http://orion-proxy:4002/v2/entities/".$cid."/attrs/soldout");
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-  curl_setopt($ch, CURLOPT_HEADER, FALSE);
-
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-
   curl_setopt($ch, CURLOPT_POSTFIELDS, "{
     \"value\": ".$bool.",
     \"type\": \"Boolean\"
   }");
 
   curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    "Content-Type: application/json"
+    'X-Auth-Token: '.$_SESSION['token'],
+    'Content-Type: application/json'
   ));
 
   $response = curl_exec($ch);

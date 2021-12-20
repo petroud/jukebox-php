@@ -15,6 +15,7 @@
  $sdate = $dataArr['sdate'];
  $edate = $dataArr['edate'];
 
+ //Validate input from Ticket Concert sales form
  if(!empty($sdate) && !empty($edate)){
      if($sdate>$edate){
          echo json_encode(array("response"=>"dateerror"));
@@ -29,13 +30,14 @@
 $curlAuth = curl_init();
 
 curl_setopt_array($curlAuth, array(
-CURLOPT_URL => 'localhost:80/api/concerts/'.$cid,
+CURLOPT_URL => 'http://dss-proxy:4001/api/concerts/'.$cid,
 CURLOPT_RETURNTRANSFER => true,
 CURLOPT_ENCODING => '',
 CURLOPT_MAXREDIRS => 10,
 CURLOPT_TIMEOUT => 0,
 CURLOPT_FOLLOWLOCATION => true,
 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+CURLOPT_HTTPHEADER => array('X-Auth-Token: '.$_SESSION['token']),
 CURLOPT_CUSTOMREQUEST => 'GET',
 ));
 
@@ -50,7 +52,7 @@ if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
-    CURLOPT_URL => '192.168.1.11:1026/v2/entities?options=keyValues',
+    CURLOPT_URL => 'http://orion-proxy:4002/v2/entities?options=keyValues',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -67,7 +69,8 @@ if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid
     "soldout": false
     }',
     CURLOPT_HTTPHEADER => array(
-        'Content-Type: application/json'
+        'Content-Type: application/json',
+        'X-Auth-Token: '.$_SESSION['token']
     ),
     ));
     $response = curl_exec($curl);
