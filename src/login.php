@@ -21,7 +21,7 @@
             $cc = curl_init();
 
             //Build request to be sent to IDM-Keyrock service
-            curl_setopt($cc, CURLOPT_URL, "http://localhost:3005/v1/auth/tokens");
+            curl_setopt($cc, CURLOPT_URL, "http://keyrock:3005/v1/auth/tokens");
             curl_setopt($cc, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($cc, CURLOPT_HEADER, 1);
             curl_setopt($cc, CURLOPT_POST, TRUE);
@@ -56,7 +56,7 @@
 
                     //Build request to be sent to IDM-Keyrock service for reading the user info
                     $curlClient = curl_init();
-                    curl_setopt($curlClient, CURLOPT_URL, "http://localhost:3005/v1/users/".$userAppInfo['keyrock_id']);
+                    curl_setopt($curlClient, CURLOPT_URL, "http://keyrock:3005/v1/users/".$userAppInfo['keyrock_id']);
                     curl_setopt($curlClient, CURLOPT_RETURNTRANSFER, TRUE);
                     curl_setopt($curlClient, CURLOPT_HTTPHEADER, array("X-Auth-Token: ".$xToken));
                     $answerIDM = curl_exec($curlClient);
@@ -69,7 +69,7 @@
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
-                      CURLOPT_URL => 'http://localhost:3005/oauth2/token',
+                      CURLOPT_URL => 'http://keyrock:3005/oauth2/token',
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_ENCODING => '',
                       CURLOPT_MAXREDIRS => 10,
