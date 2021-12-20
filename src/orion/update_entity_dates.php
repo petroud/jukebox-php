@@ -28,11 +28,12 @@
 $curlAuth = curl_init();
 
 curl_setopt_array($curlAuth, array(
-CURLOPT_URL => 'localhost:80/api/concerts/'.$cid,
+CURLOPT_URL => 'http://dss-proxy:4001/api/concerts/'.$cid,
 CURLOPT_RETURNTRANSFER => true,
 CURLOPT_ENCODING => '',
 CURLOPT_MAXREDIRS => 10,
 CURLOPT_TIMEOUT => 0,
+CURLOPT_HTTPHEADER => array('X-Auth-Token: '.$_SESSION['token']),
 CURLOPT_FOLLOWLOCATION => true,
 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 CURLOPT_CUSTOMREQUEST => 'GET',
@@ -51,8 +52,6 @@ if(array_key_exists("organizer",$resArray[0]) && $resArray[0]["organizer"]==$uid
 
     curl_setopt($ch, CURLOPT_URL, "http://orion-proxy:4002/v2/entities/".$cid."/attrs?options=keyValues");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_HEADER, FALSE);
-    
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
 
     curl_setopt($ch, CURLOPT_POSTFIELDS,'{

@@ -1,8 +1,8 @@
 <?php
 
-$dbhost = "192.168.1.11";
-$dbuser = "root";
-$dbpass = "root";
+$dbhost = "10.1.2.6";
+$dbuser = "keyrock";
+$dbpass = "keyrock";
 $dbname = "jukebox";
 
 if(!$con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname)){

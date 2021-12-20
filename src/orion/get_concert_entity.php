@@ -9,7 +9,7 @@ $curl = curl_init();
 
 $cid = $_GET['cid'];
 $uid = $_SESSION['user_id'];
-$rest_request = "http://orion-proxy:4001/v2/entities/".$cid."?type=concert&options=keyValues";
+$rest_request = "http://orion-proxy:4002/v2/entities/".$cid."?type=concert&options=keyValues";
 
 curl_setopt_array($curl, array(
   CURLOPT_URL => $rest_request,

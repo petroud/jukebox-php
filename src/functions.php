@@ -11,6 +11,18 @@ function check_login(){
     }
 }
 
+
+function getUnameByID($id,$con){
+    check_login($con);
+    check_user();
+    $query = "SELECT email FROM users WHERE id = '$id' LIMIT 1";
+    $result = mysqli_query($con,$query);
+    if($result && mysqli_num_rows($result) > 0){
+        $user_data = mysqli_fetch_assoc($result);
+        return $user_data;
+    }
+}
+
 function already_login(){
 
     if(isset($_SESSION['user_id'])){

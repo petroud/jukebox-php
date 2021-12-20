@@ -41,8 +41,8 @@ services:
            ipv4_address: 10.1.2.5
         environment: 
            - IDM_DB_HOST=mysql_db
-           - IDM_DB_USER=root
-           - IDM_DB_PASS=root
+           - IDM_DB_USER=keyrock
+           - IDM_DB_PASS=keyrock
            - IDM_HOST=http://localhost:3005
            - IDM_PORT=3005
            - IDM_HTTPS_ENABLED=false
@@ -79,7 +79,7 @@ services:
     orion:
         image: fiware/orion
         hostname: orion
-        container_name: orion-cb
+        container_name: orion
         links:
            - orion-mongo
         command: -dbhost orion-mongo -dbuser admin -dbpwd admin
@@ -88,17 +88,43 @@ services:
               ipv4_address: 10.1.2.10
         expose:
            - 1026
+    orion-proxy:
+        image: fiware/pep-proxy
+        container_name: orion-proxy
+        hostname: orion-proxy
+        networks:
+           intranet1:
+              ipv4_address: 10.1.2.11
         ports:
-           - 1026:1026
+          - 4002:4002
+        expose:
+          - 4002
+        depends_on:
+          - keyrock
+        environment:
+          - PEP_PROXY_APP_HOST=orion
+          - PEP_PROXY_APP_PORT=1026
+          - PEP_PROXY_PORT=4002
+          - PEP_PROXY_IDM_HOST=keyrock
+          - PEP_PROXY_HTTPS_ENABLED=false
+          - PEP_PROXY_AUTH_ENABLED=false
+          - PEP_PROXY_IDM_SSL_ENABLED=false
+          - PEP_PROXY_IDM_PORT=3005
+          - PEP_PROXY_APP_ID=803f4f84-c658-4c56-88bd-cebedf07eb24
+          - PEP_PROXY_USERNAME=pep_proxy_f49e9df7-e0c4-46a8-bb3b-bb9305fc4e8e
+          - PEP_PASSWORD=pep_proxy_a16411d8-7512-4395-bf49-3e0b373175f6
+          - PEP_PROXY_PDP=idm
     mysql_db:
         container_name: mysql_db        
+        hostname: mysql_db
         image: mysql:5.7
         restart: always
         ports:
           - '3306:3306'
         volumes:
             - ./mysql_data:/var/lib/mysql
-        command: mysqld --init-file="/var/lib/mysql/database/jukebox.sql"
+            - ./sql_init:/var/lib/jukebox
+        command: mysqld --init-file="/var/lib/jukebox/jukebox.sql"
         environment:
             MYSQL_ROOT_PASSWORD: root
         networks:
@@ -115,6 +141,8 @@ services:
            MONGO_INITDB_ROOT_PASSWORD: admin
         ports: 
            - 27018:27017
+        expose:
+           - 27017
         networks:
             intranet1:
                ipv4_address: 10.1.2.7
@@ -129,6 +157,8 @@ services:
            MONGO_INITDB_ROOT_PASSWORD: admin
         ports:
            - 27017:27017
+        expose:
+           - 27017
         networks:
            intranet1:
                ipv4_address: 10.1.2.8

@@ -1,6 +1,6 @@
 <?php
     require 'config/vendor/autoload.php';
-    $conn = new MongoDB\Client("mongodb://admin:admin@10.1.2.7:27018");
+    $conn = new MongoDB\Client("mongodb://admin:admin@mongo:27017");
     $db = $conn->jukebox;
 
     $concerts = $db->concerts;

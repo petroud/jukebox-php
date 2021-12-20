@@ -61,7 +61,7 @@ function addOrionSubscription($cid){
 
       $newSubID="";
       try{
-          $newSubID = $hdrArray['Location'];
+          $newSubID = $hdrArray['location'];
           $newSubID = substr($newSubID,18);
       }catch(Exception $ex){
       }
@@ -180,11 +180,9 @@ function availableForSubscriptions($cid){
 
     curl_setopt($ch, CURLOPT_URL, "http://orion-proxy:4002/v2/entities/".$cid."?options=keyValues");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
-    curl_setopt($ch, CURLOPT_HEADER, FALSE);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-       'Accept: application/json'
-    ));
+       'Accept: application/json',
+       'X-Auth-Token: '.$_SESSION['token']));
 
     $response = curl_exec($ch);
     curl_close($ch);
