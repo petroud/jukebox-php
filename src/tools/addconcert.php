@@ -50,7 +50,7 @@
         curl_setopt($client, CURLOPT_POST, true);
         curl_setopt($client, CURLOPT_POSTFIELDS, $reqData);
         curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
+        curl_setopt($client, CURLOPT_HTTPHEADER, array('X-Auth-Token: '.$_SESSION['token']));
         $response = curl_exec($client);
         curl_close($client);
         echo json_encode(["response"=>"New concert added!","newID"=>$response]);
